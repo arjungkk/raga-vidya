@@ -1,0 +1,211 @@
+/* ═══════════════════════════════════════
+   IDENTIFY — recorder + result
+   ═══════════════════════════════════════ */
+
+#tab-identify { overflow-y: auto; }
+#tab-identify::-webkit-scrollbar { display: none; }
+
+.identify-inner {
+  padding: 20px 16px 32px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.identify-hero { margin-bottom: 20px; }
+.identify-hero h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  color: var(--gold2);
+  margin-bottom: 6px;
+}
+.identify-hero p {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+/* ── Mode toggle ── */
+.identify-mode-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mode-btn {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 10px 0;
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-dim);
+}
+.mode-btn:active { background: var(--gold-dim); }
+
+/* ── Describe textarea ── */
+.describe-area {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  padding: 14px;
+  resize: none;
+  min-height: 120px;
+  outline: none;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.describe-area:focus { border-color: var(--gold); }
+.describe-area::placeholder { color: var(--text-muted); }
+
+/* ── Identify button ── */
+.identify-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.1));
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.identify-btn:active { background: rgba(201,168,76,0.25); }
+.identify-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Spinner ── */
+.spinner {
+  display: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 20px auto;
+}
+.spinner.show { display: block; }
+
+/* ── Recorder box ── */
+.recorder-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.recorder-status {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.record-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 3px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.record-btn:active, .record-btn.recording {
+  background: rgba(201,76,76,0.2);
+  border-color: #c94c4c;
+  box-shadow: 0 0 0 8px rgba(201,76,76,0.1);
+}
+.record-btn.recording {
+  animation: recordPulse 1s ease-in-out infinite;
+}
+
+@keyframes recordPulse {
+  0%,100% { box-shadow: 0 0 0 8px rgba(201,76,76,0.1); }
+  50%      { box-shadow: 0 0 0 16px rgba(201,76,76,0.05); }
+}
+
+.record-icon {
+  font-size: 2rem;
+  color: #c94c4c;
+  line-height: 1;
+}
+
+.recorder-hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 220px;
+  line-height: 1.5;
+}
+
+.recorder-timer {
+  font-size: 1.2rem;
+  color: #c94c4c;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.1em;
+}
+
+/* ── Audio preview ── */
+.audio-preview { display: flex; flex-direction: column; }
+
+audio {
+  accent-color: var(--gold);
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+/* ── Result card ── */
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  margin-top: 18px;
+  display: none;
+}
+.result-card.show {
+  display: block;
+  animation: fadeUp 0.3s ease;
+}
+
+.result-raga-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  color: var(--gold2);
+  margin-bottom: 6px;
+}
+
+.result-body {
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.8;
+}

@@ -1,0 +1,199 @@
+/* ═══════════════════════════════════════
+   KEYBOARD — piano keys + controls
+   ═══════════════════════════════════════ */
+
+#tab-keyboard { overflow-y: auto; }
+#tab-keyboard::-webkit-scrollbar { display: none; }
+
+/* ── Header row ── */
+.kb-header {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.kb-raga-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  color: var(--gold2);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Controls row ── */
+.ctrl-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+}
+
+.octave-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.octave-btn:active { border-color: var(--gold); color: var(--gold); }
+
+.octave-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ── Keyboard scroll container ── */
+.keyboard-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 14px 16px 18px;
+  flex-shrink: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.keyboard-wrapper::-webkit-scrollbar { height: 3px; }
+.keyboard-wrapper::-webkit-scrollbar-thumb { background: var(--border); }
+
+.keyboard {
+  display: flex;
+  position: relative;
+  height: 180px;
+  gap: 3px;
+  width: max-content;
+}
+
+/* ── White keys ── */
+.white-key {
+  width: 52px;
+  height: 180px;
+  background: linear-gradient(180deg, #e8dfc8 0%, #f5ede0 100%);
+  border: 1px solid #8a7d60;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+  transition: background 0.05s;
+}
+
+.white-key:active, .white-key.pressed {
+  transform: scaleY(0.97);
+  background: linear-gradient(180deg, rgba(212,124,42,0.35) 0%, rgba(212,124,42,0.2) 100%) !important;
+  border-color: var(--amber) !important;
+}
+
+.white-key.in-raga {
+  background: linear-gradient(180deg, var(--gold-dim) 0%, rgba(201,168,76,0.25) 100%);
+  border-color: var(--gold);
+}
+.white-key.vadi {
+  background: linear-gradient(180deg, rgba(201,168,76,0.45) 0%, rgba(201,168,76,0.55) 100%) !important;
+  border-color: var(--gold2) !important;
+}
+.white-key.samvadi {
+  background: linear-gradient(180deg, rgba(76,168,160,0.35) 0%, rgba(76,168,160,0.45) 100%) !important;
+  border-color: var(--teal) !important;
+}
+
+/* ── Black keys ── */
+.black-key-wrapper {
+  position: relative;
+  flex: 0 0 0;
+  margin-left: -16px;
+  margin-right: -16px;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.black-key {
+  width: 32px;
+  height: 110px;
+  background: linear-gradient(180deg, #2a2218 0%, #1a1610 100%);
+  border: 1px solid #0a0806;
+  border-radius: 0 0 5px 5px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  transition: background 0.05s;
+}
+
+.black-key:active, .black-key.pressed {
+  background: linear-gradient(180deg, var(--amber) 0%, rgba(212,124,42,0.6) 50%, #2a2218 100%) !important;
+  border-color: var(--amber) !important;
+  box-shadow: 0 0 8px rgba(212,124,42,0.6);
+}
+
+.black-key.in-raga {
+  background: linear-gradient(180deg, rgba(201,168,76,0.5) 0%, rgba(201,168,76,0.6) 50%, #2a2218 100%);
+  border-color: var(--gold);
+}
+.black-key.vadi {
+  background: linear-gradient(180deg, var(--gold) 0%, rgba(201,168,76,0.8) 50%, #2a2218 100%) !important;
+}
+.black-key.samvadi {
+  background: linear-gradient(180deg, var(--teal) 0%, rgba(76,168,160,0.7) 50%, #1a1610 100%) !important;
+}
+
+/* ── Key labels ── */
+.key-label {
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-align: center;
+  line-height: 1.3;
+}
+.white-key .key-label { color: #3a3020; }
+.black-key .key-label { color: rgba(255,255,255,0.8); }
+.key-label .swara-name { font-size: 0.62rem; font-weight: 700; display: block; }
+.key-label .note-name  { font-size: 0.5rem; opacity: 0.6; display: block; }
+
+/* ── Legend ── */
+.kb-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 0 16px 10px;
+  flex-shrink: 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid;
+  flex-shrink: 0;
+}

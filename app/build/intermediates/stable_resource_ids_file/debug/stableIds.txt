@@ -1,0 +1,7 @@
+com.ragavidya.app.debug:string/app_name = 0x7f050000
+com.ragavidya.app.debug:mipmap/ic_launcher = 0x7f040000
+com.ragavidya.app.debug:layout/activity_main = 0x7f030000
+com.ragavidya.app.debug:id/webview = 0x7f020000
+com.ragavidya.app.debug:mipmap/ic_launcher_round = 0x7f040001
+com.ragavidya.app.debug:color/gold = 0x7f010001
+com.ragavidya.app.debug:color/bg = 0x7f010000

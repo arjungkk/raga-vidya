@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0d0a06</color>
+    <color name="gold">#c9a84c</color>
+    <string name="app_name">Raga Vidya</string>
+</resources>

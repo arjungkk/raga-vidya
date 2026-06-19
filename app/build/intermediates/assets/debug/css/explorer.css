@@ -1,0 +1,261 @@
+/* ═══════════════════════════════════════
+   EXPLORER — raga list + detail panel
+   ═══════════════════════════════════════ */
+
+#tab-explorer {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Sidebar list (slides left on raga select) ── */
+.raga-list {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 100%;
+  background: var(--bg2);
+  overflow-y: auto;
+  z-index: 10;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.raga-list.hidden { transform: translateX(-100%); }
+.raga-list::-webkit-scrollbar { display: none; }
+
+.raga-list-topbar {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.raga-list-title {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.search-box {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  outline: none;
+  margin-bottom: 8px;
+}
+.search-box:focus { border-color: var(--gold); }
+
+.type-filters { display: flex; gap: 6px; }
+
+.type-filter-btn {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 7px 0;
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.type-filter-btn.active {
+  background: var(--gold-dim) !important;
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+}
+
+.melakarta-label {
+  font-size: 0.56rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 16px 4px;
+}
+
+.raga-item {
+  padding: 14px 16px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid rgba(58,48,32,0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.1s;
+}
+.raga-item:active { background: var(--bg3); }
+.raga-item.selected {
+  background: var(--gold-dim);
+  border-left-color: var(--gold);
+}
+
+.raga-item-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  color: var(--white);
+}
+.raga-item-meta {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.raga-item-chevron {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ── Detail panel (slides in from right) ── */
+.raga-detail {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  z-index: 9;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 16px;
+}
+.raga-detail::-webkit-scrollbar { display: none; }
+.raga-detail.visible { transform: translateX(0); }
+
+.detail-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.raga-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: var(--gold2);
+  line-height: 1.1;
+}
+
+.raga-subtitle {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 4px;
+  margin-bottom: 14px;
+}
+
+.raga-description {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* ── Detail cards ── */
+.detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.detail-card-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* ── Swara pills ── */
+.swara-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.swara-pill {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.swara-Sa  { background: rgba(201,76,76,0.15);  border-color: rgba(201,76,76,0.4);  color: #e88080; }
+.swara-R1  { background: rgba(201,116,76,0.15); border-color: rgba(201,116,76,0.4); color: #e8a070; }
+.swara-G1  { background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.4); color: #e8c870; }
+.swara-M1  { background: rgba(138,201,76,0.15); border-color: rgba(138,201,76,0.4); color: #a8e070; }
+.swara-Pa  { background: rgba(76,168,160,0.15); border-color: rgba(76,168,160,0.4); color: #70d0c8; }
+.swara-D1  { background: rgba(76,116,201,0.15); border-color: rgba(76,116,201,0.4); color: #70a0e8; }
+.swara-N1  { background: rgba(164,76,201,0.15); border-color: rgba(164,76,201,0.4); color: #c070e8; }
+
+/* ── Vadi / Samvadi ── */
+.vadi-section { display: flex; gap: 20px; align-items: flex-start; margin-top: 4px; }
+
+.vadi-block label {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.time-badge {
+  display: inline-block;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 0.68rem;
+  color: var(--gold);
+}
+
+.phrase-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+/* ── Open-in buttons ── */
+.open-in-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-dim);
+  padding: 13px 16px;
+  margin-bottom: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+.open-in-btn:active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-dim);
+}

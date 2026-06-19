@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Raga Vidya</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0a06; --bg2: #141009; --bg3: #1c160e;
+    --surface: #231e14; --border: #3a3020;
+    --gold: #c9a84c; --gold2: #e8c96a; --gold-dim: rgba(201,168,76,0.15);
+    --amber: #d47c2a; --teal: #4ca8a0;
+    --text: #e8dfc8; --text-dim: #8a7d60; --text-muted: #4a4030;
+    --white: #f5ede0; --nav-h: 60px; --header-h: 52px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { font-family:'DM Mono',monospace; background:var(--bg); color:var(--text); height:100%; overflow:hidden; }
+  header { height:var(--header-h); background:var(--bg2); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 16px; position:fixed; top:0; left:0; right:0; z-index:200; }
+  .logo { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--gold); }
+  .logo span { font-style:italic; color:var(--gold2); }
+  nav { position:fixed; bottom:0; left:0; right:0; height:var(--nav-h); background:var(--bg2); border-top:1px solid var(--border); display:flex; z-index:200; }
+  nav button { flex:1; background:none; border:none; color:var(--text-muted); font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:6px 0; }
+  nav button .nav-icon { font-size:1.3rem; line-height:1; }
+  nav button.active { color:var(--gold); }
+  nav button .nav-bar { width:0; height:2px; background:var(--gold); border-radius:2px; transition:width 0.2s; margin-top:2px; }
+  nav button.active .nav-bar { width:24px; }
+  .app-body { position:fixed; top:var(--header-h); bottom:var(--nav-h); left:0; right:0; overflow:hidden; }
+  .tab { display:none; width:100%; height:100%; }
+  .tab.active { display:flex; flex-direction:column; }
+
+  /* EXPLORER */
+  #tab-explorer { position:relative; overflow:hidden; }
+  .raga-list { position:absolute; top:0; bottom:0; left:0; width:100%; background:var(--bg2); overflow-y:auto; z-index:10; transition:transform 0.28s cubic-bezier(0.4,0,0.2,1); }
+  .raga-list.hidden { transform:translateX(-100%); }
+  .raga-list::-webkit-scrollbar { display:none; }
+  .raga-list-topbar { padding:12px 16px 8px; border-bottom:1px solid var(--border); background:var(--bg2); position:sticky; top:0; z-index:2; }
+  .raga-list-title { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
+  .search-box { width:100%; background:var(--bg3); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.85rem; padding:10px 14px; outline:none; margin-bottom:8px; }
+  .search-box:focus { border-color:var(--gold); }
+  .type-filters { display:flex; gap:6px; }
+  .type-filter-btn { flex:1; background:none; border:1px solid var(--border); color:var(--text-dim); padding:7px 0; border-radius:6px; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; }
+  .type-filter-btn.active { background:var(--gold-dim)!important; border-color:var(--gold)!important; color:var(--gold)!important; }
+  .melakarta-label { font-size:0.56rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); padding:10px 16px 4px; }
+  .raga-item { padding:14px 16px; cursor:pointer; border-left:3px solid transparent; border-bottom:1px solid rgba(58,48,32,0.4); display:flex; justify-content:space-between; align-items:center; }
+  .raga-item:active { background:var(--bg3); }
+  .raga-item.selected { background:var(--gold-dim); border-left-color:var(--gold); }
+  .raga-item-name { font-family:'Playfair Display',serif; font-size:1rem; color:var(--white); }
+  .raga-item-meta { font-size:0.62rem; color:var(--text-dim); margin-top:2px; }
+  .raga-item-chevron { color:var(--text-muted); font-size:0.9rem; }
+  .raga-detail { position:absolute; top:0; bottom:0; left:0; right:0; background:var(--bg); overflow-y:auto; z-index:9; transform:translateX(100%); transition:transform 0.28s cubic-bezier(0.4,0,0.2,1); padding:16px; }
+  .raga-detail::-webkit-scrollbar { display:none; }
+  .raga-detail.visible { transform:translateX(0); }
+  .detail-back-btn { display:flex; align-items:center; gap:8px; background:none; border:none; color:var(--gold); font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; padding:0; margin-bottom:20px; }
+  .raga-title { font-family:'Playfair Display',serif; font-size:2rem; color:var(--gold2); line-height:1.1; }
+  .raga-subtitle { font-size:0.65rem; letter-spacing:0.12em; color:var(--text-dim); text-transform:uppercase; margin-top:4px; margin-bottom:14px; }
+  .raga-description { font-size:0.78rem; color:var(--text-dim); line-height:1.7; margin-bottom:20px; }
+  .tag { display:inline-block; background:var(--bg3); border:1px solid var(--border); border-radius:4px; padding:3px 8px; font-size:0.62rem; color:var(--text-dim); margin:0 4px 4px 0; }
+  .detail-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:12px; }
+  .detail-card-label { font-size:0.58rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
+  .swara-row { display:flex; gap:6px; flex-wrap:wrap; }
+  .swara-pill { font-size:0.75rem; padding:4px 10px; border-radius:20px; font-weight:500; border:1px solid; }
+  .swara-Sa{background:rgba(201,76,76,0.15);border-color:rgba(201,76,76,0.4);color:#e88080}
+  .swara-R1{background:rgba(201,116,76,0.15);border-color:rgba(201,116,76,0.4);color:#e8a070}
+  .swara-G1{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4);color:#e8c870}
+  .swara-M1{background:rgba(138,201,76,0.15);border-color:rgba(138,201,76,0.4);color:#a8e070}
+  .swara-Pa{background:rgba(76,168,160,0.15);border-color:rgba(76,168,160,0.4);color:#70d0c8}
+  .swara-D1{background:rgba(76,116,201,0.15);border-color:rgba(76,116,201,0.4);color:#70a0e8}
+  .swara-N1{background:rgba(164,76,201,0.15);border-color:rgba(164,76,201,0.4);color:#c070e8}
+  .vadi-section { display:flex; gap:20px; align-items:flex-start; margin-top:4px; }
+  .vadi-block label { font-size:0.55rem; color:var(--text-muted); display:block; margin-bottom:5px; letter-spacing:0.1em; text-transform:uppercase; }
+  .time-badge { display:inline-block; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); border-radius:20px; padding:3px 12px; font-size:0.68rem; color:var(--gold); }
+  .phrase-item { background:var(--bg3); border:1px solid var(--border); border-radius:4px; padding:10px 12px; margin-bottom:6px; font-size:0.8rem; color:var(--text); letter-spacing:0.04em; }
+  .open-in-btn { display:flex; align-items:center; gap:8px; width:100%; background:var(--bg3); border:1px solid var(--border); border-radius:8px; color:var(--text-dim); padding:13px 16px; margin-bottom:8px; font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; text-align:left; }
+  .open-in-btn:active { border-color:var(--gold); color:var(--gold); background:var(--gold-dim); }
+
+  /* KEYBOARD */
+  #tab-keyboard { overflow-y:auto; }
+  #tab-keyboard::-webkit-scrollbar { display:none; }
+  .kb-header { padding:10px 16px; border-bottom:1px solid var(--border); background:var(--bg2); display:flex; align-items:center; gap:10px; flex-shrink:0; flex-wrap:wrap; }
+  .kb-raga-name { font-family:'Playfair Display',serif; font-size:1rem; color:var(--gold2); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  select { background:var(--surface); border:1px solid var(--border); color:var(--text); padding:8px 28px 8px 12px; border-radius:6px; font-family:'DM Mono',monospace; font-size:0.75rem; cursor:pointer; outline:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a7d60' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; }
+  select:focus { border-color:var(--gold); }
+  .ctrl-row { display:flex; gap:10px; align-items:center; padding:10px 16px; flex-wrap:wrap; border-bottom:1px solid var(--border); background:var(--bg2); flex-shrink:0; }
+  .ctrl-label { font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); }
+  .octave-btn { background:var(--surface); border:1px solid var(--border); color:var(--text-dim); width:36px; height:36px; border-radius:6px; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; }
+  .octave-btn:active { border-color:var(--gold); color:var(--gold); }
+  .octave-label { font-size:0.85rem; color:var(--text-dim); min-width:20px; text-align:center; }
+  .keyboard-wrapper { overflow-x:auto; overflow-y:hidden; padding:14px 16px 18px; flex-shrink:0; -webkit-overflow-scrolling:touch; }
+  .keyboard-wrapper::-webkit-scrollbar { height:3px; }
+  .keyboard-wrapper::-webkit-scrollbar-thumb { background:var(--border); }
+  .keyboard { display:flex; position:relative; height:180px; gap:3px; width:max-content; }
+  .white-key { width:52px; height:180px; background:linear-gradient(180deg,#e8dfc8 0%,#f5ede0 100%); border:1px solid #8a7d60; border-radius:0 0 8px 8px; cursor:pointer; position:relative; display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px; flex-shrink:0; }
+  .white-key:active,.white-key.pressed { transform:scaleY(0.97); background:linear-gradient(180deg,rgba(212,124,42,0.35) 0%,rgba(212,124,42,0.2) 100%)!important; border-color:var(--amber)!important; }
+  .white-key.in-raga { background:linear-gradient(180deg,var(--gold-dim) 0%,rgba(201,168,76,0.25) 100%); border-color:var(--gold); }
+  .white-key.vadi { background:linear-gradient(180deg,rgba(201,168,76,0.45) 0%,rgba(201,168,76,0.55) 100%)!important; border-color:var(--gold2)!important; }
+  .white-key.samvadi { background:linear-gradient(180deg,rgba(76,168,160,0.35) 0%,rgba(76,168,160,0.45) 100%)!important; border-color:var(--teal)!important; }
+  .black-key-wrapper { position:relative; flex:0 0 0; margin-left:-16px; margin-right:-16px; z-index:2; flex-shrink:0; }
+  .black-key { width:32px; height:110px; background:linear-gradient(180deg,#2a2218 0%,#1a1610 100%); border:1px solid #0a0806; border-radius:0 0 5px 5px; cursor:pointer; position:relative; display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px; }
+  .black-key:active,.black-key.pressed { background:linear-gradient(180deg,var(--amber) 0%,rgba(212,124,42,0.6) 50%,#2a2218 100%)!important; border-color:var(--amber)!important; box-shadow:0 0 8px rgba(212,124,42,0.6); }
+  .black-key.in-raga { background:linear-gradient(180deg,rgba(201,168,76,0.5) 0%,rgba(201,168,76,0.6) 50%,#2a2218 100%); border-color:var(--gold); }
+  .black-key.vadi { background:linear-gradient(180deg,var(--gold) 0%,rgba(201,168,76,0.8) 50%,#2a2218 100%)!important; }
+  .black-key.samvadi { background:linear-gradient(180deg,var(--teal) 0%,rgba(76,168,160,0.7) 50%,#1a1610 100%)!important; }
+  .key-label { font-size:0.55rem; font-weight:500; letter-spacing:0.04em; text-align:center; line-height:1.3; }
+  .white-key .key-label { color:#3a3020; }
+  .black-key .key-label { color:rgba(255,255,255,0.8); }
+  .key-label .swara-name { font-size:0.62rem; font-weight:700; display:block; }
+  .key-label .note-name { font-size:0.5rem; opacity:0.6; display:block; }
+  .kb-legend { display:flex; gap:12px; flex-wrap:wrap; padding:0 16px 10px; flex-shrink:0; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:0.6rem; color:var(--text-dim); }
+  .legend-swatch { width:12px; height:12px; border-radius:2px; border:1px solid; flex-shrink:0; }
+  .playback-section { background:var(--surface); border-top:1px solid var(--border); padding:12px 16px; flex-shrink:0; }
+  .playback-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px; }
+  .section-title { font-size:0.58rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); }
+  .tempo-row { display:flex; align-items:center; gap:8px; }
+  .play-btns { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .play-btn { background:var(--bg3); border:1px solid var(--border); color:var(--text-dim); padding:10px 14px; border-radius:6px; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; }
+  .play-btn:active,.play-btn.active { border-color:var(--gold); color:var(--gold); background:var(--gold-dim); }
+  .play-btn.playing { border-color:var(--amber); color:var(--amber); background:rgba(212,124,42,0.1); animation:pulse 1s infinite; }
+  .seq-select-btn.active { border-color:var(--gold)!important; color:var(--gold)!important; background:var(--gold-dim)!important; }
+  .play-action-btn { border-color:var(--teal)!important; color:var(--teal)!important; }
+  .play-action-btn:active { background:rgba(76,168,160,0.15)!important; }
+  .play-action-btn.playing { border-color:var(--amber)!important; color:var(--amber)!important; background:rgba(212,124,42,0.1)!important; animation:pulse 1s infinite; }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+  .kb-hint { font-size:0.62rem; color:var(--text-muted); margin-top:8px; line-height:1.5; }
+
+  /* GUITAR */
+  #tab-guitar { overflow-y:auto; }
+  #tab-guitar .fretboard-scroll { flex:1; overflow-x:auto; overflow-y:hidden; }
+  #tab-guitar .playback-section { flex-shrink:0; border-top:1px solid var(--border); }
+  #tab-guitar::-webkit-scrollbar { display:none; }
+  .guitar-controls { padding:12px 16px; border-bottom:1px solid var(--border); background:var(--bg2); flex-shrink:0; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .fretboard-scroll { overflow-x:auto; overflow-y:hidden; padding:16px; flex-shrink:0; -webkit-overflow-scrolling:touch; }
+  .fretboard-scroll::-webkit-scrollbar { height:3px; }
+  .fretboard-scroll::-webkit-scrollbar-thumb { background:var(--border); }
+  .fretboard { background:#1a1008; border:1px solid var(--border); border-radius:6px; padding:14px; width:max-content; min-width:100%; }
+  .fret-row { display:flex; align-items:center; margin-bottom:10px; }
+  .string-label { width:40px; font-size:0.65rem; color:var(--text-dim); text-align:right; padding-right:10px; flex-shrink:0; }
+  .fret-cell { width:56px; height:36px; border-right:2px solid #3a3020; position:relative; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .fret-cell:first-child { border-left:4px solid #8a7d60; }
+  .string-line { position:absolute; top:50%; left:0; right:0; height:1px; background:#8a7d60; transform:translateY(-50%); }
+  .fret-note { position:relative; z-index:1; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.58rem; font-weight:600; cursor:pointer; }
+  .fret-note.in-raga { background:var(--gold-dim); border:1px solid var(--gold); color:var(--gold); }
+  .fret-note.pressed { background:var(--amber)!important; border-color:var(--amber)!important; color:var(--white)!important; box-shadow:0 0 8px rgba(212,124,42,0.7); transform:scale(1.15); transition:transform 0.05s; }
+  .fret-note.vadi { background:rgba(201,168,76,0.5); border:1px solid var(--gold2); color:var(--white); }
+  .fret-note.samvadi { background:rgba(76,168,160,0.4); border:1px solid var(--teal); color:var(--white); }
+  .fret-numbers { display:flex; margin-left:40px; margin-bottom:4px; }
+  .fret-num { width:56px; text-align:center; font-size:0.58rem; color:var(--text-muted); flex-shrink:0; }
+  .fret-dots-row { display:flex; margin-left:40px; margin-bottom:8px; }
+  .fret-dot-cell { width:56px; display:flex; justify-content:center; align-items:center; height:8px; flex-shrink:0; }
+  .fret-dot { width:5px; height:5px; background:var(--border); border-radius:50%; }
+
+  /* IDENTIFY */
+  #tab-identify { overflow-y:auto; }
+  #tab-identify::-webkit-scrollbar { display:none; }
+  .identify-inner { padding:20px 16px 32px; max-width:600px; margin:0 auto; }
+  .identify-hero { margin-bottom:20px; }
+  .identify-hero h2 { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--gold2); margin-bottom:6px; }
+  .identify-hero p { font-size:0.75rem; color:var(--text-dim); line-height:1.7; }
+  .describe-area { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:14px; resize:none; min-height:120px; outline:none; line-height:1.6; margin-bottom:12px; }
+  .describe-area:focus { border-color:var(--gold); }
+  .describe-area::placeholder { color:var(--text-muted); }
+  .identify-btn { width:100%; padding:14px; background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.1)); border:1px solid var(--gold); border-radius:8px; color:var(--gold); font-family:'DM Mono',monospace; font-size:0.78rem; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; }
+  .identify-btn:active { background:rgba(201,168,76,0.25); }
+  .identify-btn:disabled { opacity:0.4; }
+  .spinner { display:none; width:24px; height:24px; border:2px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; margin:20px auto; }
+  .spinner.show { display:block; }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .result-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px; margin-top:18px; display:none; }
+  .result-card.show { display:block; animation:fadeUp 0.3s ease; }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  /* IDENTIFY MODE TOGGLE */
+  .identify-mode-row { display:flex; gap:8px; margin-bottom:16px; }
+  .mode-btn { flex:1; background:none; border:1px solid var(--border); color:var(--text-dim); padding:10px 0; border-radius:8px; font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.15s; }
+  .mode-btn.active { border-color:var(--gold); color:var(--gold); background:var(--gold-dim); }
+  .mode-btn:active { background:var(--gold-dim); }
+
+  /* RECORDER */
+  .recorder-box { display:flex; flex-direction:column; align-items:center; gap:14px; padding:28px 16px; background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:12px; }
+  .recorder-status { font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); }
+  .record-btn { width:80px; height:80px; border-radius:50%; background:var(--bg3); border:3px solid var(--border); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; position:relative; -webkit-user-select:none; user-select:none; }
+  .record-btn:active, .record-btn.recording { background:rgba(201,76,76,0.2); border-color:#c94c4c; box-shadow:0 0 0 8px rgba(201,76,76,0.1); }
+  .record-btn.recording { animation:recordPulse 1s ease-in-out infinite; }
+  @keyframes recordPulse { 0%,100%{box-shadow:0 0 0 8px rgba(201,76,76,0.1)} 50%{box-shadow:0 0 0 16px rgba(201,76,76,0.05)} }
+  .record-icon { font-size:2rem; color:#c94c4c; line-height:1; }
+  .recorder-hint { font-size:0.65rem; color:var(--text-muted); text-align:center; max-width:220px; line-height:1.5; }
+  .recorder-timer { font-size:1.2rem; color:#c94c4c; font-family:'DM Mono',monospace; letter-spacing:0.1em; }
+  .audio-preview { display:flex; flex-direction:column; }
+
+  audio { accent-color:var(--gold); border-radius:8px; }
+  audio::-webkit-media-controls-panel { background:var(--surface); }
+
+  .result-raga-name { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--gold2); margin-bottom:6px; }
+  .result-body { font-size:0.78rem; color:var(--text); line-height:1.8; }
+
+  /* LANDSCAPE HINT */
+  .landscape-hint { display:none; position:absolute; inset:0; z-index:100; background:var(--bg); flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; padding:32px; }
+  .landscape-hint-icon { font-size:3rem; animation:rotateHint 2s ease-in-out infinite; }
+  @keyframes rotateHint{0%,100%{transform:rotate(0deg)}40%,60%{transform:rotate(90deg)}}
+  .landscape-hint p { font-size:0.82rem; color:var(--text-dim); line-height:1.7; max-width:280px; }
+  .landscape-hint-skip { background:none; border:1px solid var(--border); color:var(--text-dim); padding:10px 20px; border-radius:6px; font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; margin-top:8px; }
+  @media (orientation:portrait) { .needs-landscape .landscape-hint { display:flex; } }
+
+
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Raga <span>Vidya</span></div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('explorer', this)">
+    <span class="nav-icon">𝄞</span><span>Ragas</span><div class="nav-bar"></div>
+  </button>
+  <button onclick="showTab('keyboard', this)">
+    <span class="nav-icon">⌨</span><span>Keyboard</span><div class="nav-bar"></div>
+  </button>
+  <button onclick="showTab('guitar', this)">
+    <span class="nav-icon">🎸</span><span>Guitar</span><div class="nav-bar"></div>
+  </button>
+  <button onclick="showTab('identify', this)">
+    <span class="nav-icon">✦</span><span>Identify</span><div class="nav-bar"></div>
+  </button>
+</nav>
+
+<div class="app-body">
+
+  <!-- EXPLORER -->
+  <div id="tab-explorer" class="tab active">
+    <div class="raga-list" id="raga-list">
+      <div class="raga-list-topbar">
+        <div class="raga-list-title">Select a Raga</div>
+        <input class="search-box" type="text" placeholder="Search name, mood, tag…" oninput="filterRagas(this.value)" id="raga-search">
+        <div class="type-filters">
+          <button class="type-filter-btn active" data-type="all" onclick="setTypeFilter('all')">All</button>
+          <button class="type-filter-btn" data-type="melakarta" onclick="setTypeFilter('melakarta')">72 Mela</button>
+          <button class="type-filter-btn" data-type="janya" onclick="setTypeFilter('janya')">Janya</button>
+        </div>
+      </div>
+      <div id="raga-list-items"></div>
+    </div>
+    <div class="raga-detail" id="raga-detail">
+      <button class="detail-back-btn" onclick="showRagaList()">&#8592; Back to Ragas</button>
+      <div id="raga-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- KEYBOARD -->
+  <div id="tab-keyboard" class="tab">
+    <div class="landscape-hint">
+      <div class="landscape-hint-icon">&#128242;</div>
+      <p>Rotate to landscape for a better keyboard experience</p>
+      <button class="landscape-hint-skip" onclick="this.closest('.tab').classList.remove('needs-landscape')">Continue anyway</button>
+    </div>
+    <div class="kb-header">
+      <div class="kb-raga-name" id="kb-raga-name-display">No raga selected</div>
+      <select id="kb-raga-select" onchange="updateKeyboard()">
+        <option value="">&#8212; None &#8212;</option>
+      </select>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Sa</span>
+      <select id="kb-tonic-select" onchange="updateKeyboard()">
+        <option value="0" selected>C</option><option value="2">D</option>
+        <option value="3">D#</option><option value="4">E</option>
+        <option value="5">F</option><option value="7">G</option>
+        <option value="9">A</option><option value="10">Bb</option><option value="11">B</option>
+      </select>
+      <span class="ctrl-label" style="margin-left:8px">Oct</span>
+      <button class="octave-btn" onclick="changeOctave(-1)">&#8722;</button>
+      <span class="octave-label" id="octave-label">4</span>
+      <button class="octave-btn" onclick="changeOctave(1)">+</button>
+      <select id="kb-sound-select" style="margin-left:auto">
+        <option value="sine">Sine</option>
+        <option value="triangle" selected>Veena</option>
+        <option value="sawtooth">Saw</option>
+      </select>
+    </div>
+    <div class="keyboard-wrapper">
+      <div class="keyboard" id="keyboard"></div>
+    </div>
+    <div class="kb-legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:rgba(201,168,76,0.3);border-color:var(--gold)"></div>In sequence</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:rgba(201,168,76,0.6);border-color:var(--gold2)"></div>Vadi</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:rgba(76,168,160,0.5);border-color:var(--teal)"></div>Samvadi</div>
+    </div>
+    <div class="playback-section" id="kb-playback" style="display:none">
+      <div class="playback-row">
+        <span class="section-title">Playback</span>
+        <div class="tempo-row">
+          <span class="ctrl-label">Tempo</span>
+          <input type="range" id="tempo-slider" min="40" max="240" value="100" oninput="updateTempo(this.value)" style="width:80px;accent-color:var(--gold);cursor:pointer">
+          <span id="tempo-label" style="font-size:0.7rem;color:var(--gold);min-width:48px">100 BPM</span>
+        </div>
+      </div>
+      <div class="play-btns">
+        <button class="play-btn seq-select-btn" id="btn-aroh" onclick="selectSequence('aroh')">Arohana</button>
+        <button class="play-btn seq-select-btn" id="btn-avaroh" onclick="selectSequence('avaroh')">Avarohana</button>
+        <div style="width:1px;height:28px;background:var(--border);align-self:center"></div>
+        <button class="play-btn play-action-btn" id="btn-play" onclick="playSelected()">&#9654; Play</button>
+        <button class="play-btn" id="btn-loop" onclick="toggleLoop()">&#10227; Loop</button>
+        <button class="play-btn" onclick="stopAll()">&#9632;</button>
+      </div>
+      <div class="kb-hint" id="kb-sequence-hint">Select Arohana or Avarohana to highlight keys, then press Play.</div>
+    </div>
+  </div>
+
+  <!-- GUITAR -->
+  <div id="tab-guitar" class="tab">
+    <div class="landscape-hint">
+      <div class="landscape-hint-icon">&#128242;</div>
+      <p>Rotate to landscape for a better fretboard view</p>
+      <button class="landscape-hint-skip" onclick="this.closest('.tab').classList.remove('needs-landscape')">Continue anyway</button>
+    </div>
+    <div class="guitar-controls">
+      <select id="guitar-raga-select" onchange="updateGuitar()">
+        <option value="">&#8212; No Raga &#8212;</option>
+      </select>
+      <select id="guitar-tuning" style="display:none"><option value="standard" selected>Standard (EADGBe)</option></select>
+    </div>
+    <div class="fretboard-scroll">
+      <div id="fretboard-container"></div>
+    </div>
+    <div class="playback-section" id="guitar-playback" style="display:none">
+      <div class="playback-row">
+        <span class="section-title">Playback</span>
+        <div class="tempo-row">
+          <span class="ctrl-label">Tempo</span>
+          <input type="range" id="guitar-tempo-slider" min="40" max="240" value="100"
+            oninput="updateGuitarTempo(this.value)"
+            style="width:80px;accent-color:var(--gold);cursor:pointer">
+          <span id="guitar-tempo-label" style="font-size:0.7rem;color:var(--gold);min-width:48px">100 BPM</span>
+        </div>
+      </div>
+      <div class="play-btns">
+        <button class="play-btn seq-select-btn" id="gbtn-aroh" onclick="selectGuitarSeq('aroh')">Arohana</button>
+        <button class="play-btn seq-select-btn" id="gbtn-avaroh" onclick="selectGuitarSeq('avaroh')">Avarohana</button>
+        <div style="width:1px;height:28px;background:var(--border);align-self:center"></div>
+        <button class="play-btn play-action-btn" id="gbtn-play" onclick="playGuitarSelected()">&#9654; Play</button>
+        <button class="play-btn" id="gbtn-loop" onclick="toggleGuitarLoop()">&#10227; Loop</button>
+        <button class="play-btn" onclick="stopGuitarAll()">&#9632;</button>
+      </div>
+      <div class="kb-hint" id="guitar-seq-hint">Select Arohana or Avarohana to highlight notes, then press Play.</div>
+    </div>
+  </div>
+
+  <!-- IDENTIFY -->
+  <div id="tab-identify" class="tab">
+    <div class="identify-inner">
+      <div class="identify-hero">
+        <h2>Raga Identifier</h2>
+        <p>Hum or sing a melody, or describe the swaras — AI will identify the raga.</p>
+      </div>
+
+      <!-- Mode toggle -->
+      <div class="identify-mode-row">
+        <button class="mode-btn active" id="mode-btn-text" onclick="setIdentifyMode('text')">&#9000; Describe</button>
+        <button class="mode-btn" id="mode-btn-audio" onclick="setIdentifyMode('audio')">&#127908; Sing / Hum</button>
+      </div>
+
+      <!-- Text mode -->
+      <div id="identify-text-mode">
+        <textarea class="describe-area" id="identify-input" placeholder="e.g. Sa Ri2 Ga3 Ma1 Pa — feels evening and majestic..."></textarea>
+        <button class="identify-btn" id="identify-btn-text" onclick="identifyRaga()">&#10022; Identify from Description</button>
+      </div>
+
+      <!-- Audio mode -->
+      <div id="identify-audio-mode" style="display:none">
+        <div class="recorder-box" id="recorder-box">
+          <div class="recorder-status" id="recorder-status">Press and hold to record</div>
+          <button class="record-btn" id="record-btn"
+            onmousedown="startRecording()" onmouseup="stopRecording()"
+            ontouchstart="startRecording(event)" ontouchend="stopRecording(event)">
+            <span class="record-icon" id="record-icon">&#9679;</span>
+          </button>
+          <div class="recorder-hint">Hold the button while you sing or hum the raga</div>
+          <div class="recorder-timer" id="recorder-timer" style="display:none">0s</div>
+        </div>
+        <div class="audio-preview" id="audio-preview" style="display:none">
+          <audio id="audio-playback" controls style="width:100%;margin-bottom:10px"></audio>
+          <button class="identify-btn" id="identify-btn-audio" onclick="identifyFromAudio()">&#10022; Identify from Recording</button>
+          <button class="identify-btn" style="background:none;border-color:var(--border);color:var(--text-dim);margin-top:8px" onclick="clearRecording()">&#8635; Record Again</button>
+        </div>
+      </div>
+
+      <div class="spinner" id="identify-spinner"></div>
+      <div class="result-card" id="identify-result">
+        <div class="result-raga-name" id="result-name"></div>
+        <div class="result-body" id="result-body"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+// Semitone offsets from Sa for each swara variant
+const SWARA_SEMITONES = {
+  'Sa': 0, 'R1': 1, 'R2': 2, 'R3': 4, 'G1': 2, 'G2': 3, 'G3': 4,
+  'M1': 5, 'M2': 6, 'Pa': 7, 'P': 7,
+  'D1': 8, 'D2': 9, 'D3': 11, 'N1': 9, 'N2': 10, 'N3': 11
+};
+
+const RAGAS = [
+
+  // ══════════════════════════════════════════
+  // 72 MELAKARTA RAGAS
+  // ══════════════════════════════════════════
+
+  // Chakra 1 — Indu
+  { type:'melakarta', number:1, name:'Kanakangi', melakarta:'Kanakangi (1)',
+    aroh:['Sa','R1','G1','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G1','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Austere',
+    phrases:['Sa R1 G1 M1 Pa','Pa D1 N1 Sa','Sa N1 D1 Pa M1'],
+    tags:['Sampurna','Melakarta'], description:'First melakarta with all komal swaras except Ma. Rarely performed as a concert raga but forms the root of the system.' },
+
+  { type:'melakarta', number:2, name:'Ratnangi', melakarta:'Ratnangi (2)',
+    aroh:['Sa','R1','G1','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G1','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Contemplative',
+    phrases:['Sa R1 G1 M1','Pa D1 N2 Sa','N2 D1 Pa M1 G1'],
+    tags:['Sampurna','Melakarta'], description:'Second melakarta. Distinguished by D1 and N2 combination in the upper tetrachord.' },
+
+  { type:'melakarta', number:3, name:'Ganamurti', melakarta:'Ganamurti (3)',
+    aroh:['Sa','R1','G1','M1','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G1','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Serious',
+    phrases:['Sa R1 G1 M1 Pa','N3 D1 Pa M1','Sa N3 D1'],
+    tags:['Sampurna','Melakarta'], description:'Third melakarta featuring the unusual D1-N3 combination giving a distinct, tense character.' },
+
+  { type:'melakarta', number:4, name:'Vanaspati', melakarta:'Vanaspati (4)',
+    aroh:['Sa','R1','G1','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G1','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Calm',
+    phrases:['Sa R1 G1 M1 Pa D2','N2 D2 Pa M1','G1 R1 Sa'],
+    tags:['Sampurna','Melakarta'], description:'Fourth melakarta with D2 and N2 (identical pitch) making it particularly distinctive.' },
+
+  { type:'melakarta', number:5, name:'Manavati', melakarta:'Manavati (5)',
+    aroh:['Sa','R1','G1','M1','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G1','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Regal',
+    phrases:['Sa R1 G1 M1 Pa','D2 N3 Sa','Sa N3 D2 Pa'],
+    tags:['Sampurna','Melakarta'], description:'Fifth melakarta combining komal lower swaras with D2 and N3.' },
+
+  { type:'melakarta', number:6, name:'Tanarupi', melakarta:'Tanarupi (6)',
+    aroh:['Sa','R1','G1','M1','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M1','G1','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Intense',
+    phrases:['Sa R1 G1 M1 Pa D3','N3 Sa','Sa N3 D3 Pa'],
+    tags:['Sampurna','Melakarta'], description:'Sixth melakarta (D3=D2, N3). Parent of Varali, one of the most important ragas.' },
+
+  // Chakra 2 — Netra
+  { type:'melakarta', number:7, name:'Senavati', melakarta:'Senavati (7)',
+    aroh:['Sa','R1','G2','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G2','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Melancholic',
+    phrases:['Sa R1 G2 M1','Pa D1 N1 Sa','N1 D1 Pa M1 G2'],
+    tags:['Sampurna','Melakarta'], description:'Seventh melakarta with G2 (same pitch as R2) pairing with D1 N1.' },
+
+  { type:'melakarta', number:8, name:'Hanumatodi', melakarta:'Hanumatodi (8)',
+    aroh:['Sa','R1','G2','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R1','Sa'],
+    vadi:'D1', samvadi:'G2', time:'Morning', mood:'Serious, Profound',
+    phrases:['Sa R1 G2 M1 Pa','Ni Da Pa Ma','Ga Ma Pa Da Ni Sa'],
+    tags:['Sampurna','Melakarta','Morning'], description:'One of the most important melakartas. Parent of the magnificent Todi family. Rich in gamakas and deeply expressive.' },
+
+  { type:'melakarta', number:9, name:'Dhenuka', melakarta:'Dhenuka (9)',
+    aroh:['Sa','R1','G2','M1','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G2','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Serene',
+    phrases:['Sa R1 G2 M1 Pa','N3 D1 Pa','Sa N3 D1'],
+    tags:['Sampurna','Melakarta'], description:'Ninth melakarta featuring D1 N3, an unusual interval giving it a tense quality.' },
+
+  { type:'melakarta', number:10, name:'Natakapriya', melakarta:'Natakapriya (10)',
+    aroh:['Sa','R1','G2','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G2','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Dramatic',
+    phrases:['Sa R1 G2 M1 Pa D2','N2 Sa','Sa N2 D2 Pa'],
+    tags:['Sampurna','Melakarta'], description:'Tenth melakarta meaning "beloved of actors". Has a bright upper tetrachord.' },
+
+  { type:'melakarta', number:11, name:'Kokilapriya', melakarta:'Kokilapriya (11)',
+    aroh:['Sa','R1','G2','M1','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G2','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Pleasing',
+    phrases:['Sa R1 G2 M1 Pa','D2 N3 Sa','Sa N3 D2 Pa M1'],
+    tags:['Sampurna','Melakarta'], description:'Eleventh melakarta meaning "beloved of the cuckoo". Parent of some beautiful ragas.' },
+
+  { type:'melakarta', number:12, name:'Rupavati', melakarta:'Rupavati (12)',
+    aroh:['Sa','R1','G2','M1','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M1','G2','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Beautiful',
+    phrases:['Sa R1 G2 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1'],
+    tags:['Sampurna','Melakarta'], description:'Twelfth melakarta meaning "beautiful". Completes the second chakra.' },
+
+  // Chakra 3 — Agni
+  { type:'melakarta', number:13, name:'Gayakapriya', melakarta:'Gayakapriya (13)',
+    aroh:['Sa','R1','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R1','Sa'],
+    vadi:'G3', samvadi:'N1', time:'Any', mood:'Unusual',
+    phrases:['Sa R1 G3 M1 Pa','D1 N1 Sa','Sa N1 D1 Pa'],
+    tags:['Sampurna','Melakarta'], description:'Thirteenth melakarta with the unusual R1-G3 (augmented second) interval giving it a distinctive exotic flavour.' },
+
+  { type:'melakarta', number:14, name:'Vakulabharanam', melakarta:'Vakulabharanam (14)',
+    aroh:['Sa','R1','G3','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G3','R1','Sa'],
+    vadi:'G3', samvadi:'D1', time:'Any', mood:'Complex',
+    phrases:['Sa R1 G3 M1','Pa D1 N2 Sa','N2 D1 Pa G3'],
+    tags:['Sampurna','Melakarta'], description:'Fourteenth melakarta with an augmented second between R1 and G3. Used in some Thyagaraja compositions.' },
+
+  { type:'melakarta', number:15, name:'Mayamalavagowla', melakarta:'Mayamalavagowla (15)',
+    aroh:['Sa','R1','G3','M1','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G3','R1','Sa'],
+    vadi:'R1', samvadi:'Pa', time:'Dawn', mood:'Austere, Prayerful',
+    phrases:['Sa Ri Ga Ma Pa','Da Ni Sa','Sa Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Melakarta','Dawn'], description:'The gateway raga — students of Carnatic music begin here. Corresponds to the Bhairav that of Hindustani. Deeply sacred.' },
+
+  { type:'melakarta', number:16, name:'Chakravakam', melakarta:'Chakravakam (16)',
+    aroh:['Sa','R1','G3','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R1','Sa'],
+    vadi:'G3', samvadi:'N2', time:'Morning', mood:'Sweet, Pleasing',
+    phrases:['Sa R1 G3 M1 Pa','D2 N2 Sa','Sa N2 D2 Pa G3'],
+    tags:['Sampurna','Melakarta','Morning'], description:'A widely-used melakarta, parent of the beautiful Ahiri. Has a pleasing, versatile quality.' },
+
+  { type:'melakarta', number:17, name:'Suryakantam', melakarta:'Suryakantam (17)',
+    aroh:['Sa','R1','G3','M1','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G3','R1','Sa'],
+    vadi:'R1', samvadi:'Pa', time:'Morning', mood:'Bright',
+    phrases:['Sa R1 G3 M1 Pa D2','N3 Sa','Sa N3 D2 Pa M1'],
+    tags:['Sampurna','Melakarta'], description:'Seventeenth melakarta meaning "sun-gem". Has a bright, luminous quality owing to its svaras.' },
+
+  { type:'melakarta', number:18, name:'Hatakambari', melakarta:'Hatakambari (18)',
+    aroh:['Sa','R1','G3','M1','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M1','G3','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Stately',
+    phrases:['Sa R1 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa'],
+    tags:['Sampurna','Melakarta'], description:'Eighteenth melakarta completing the third chakra. Has a stately, dignified character.' },
+
+  // Chakra 4 — Veda
+  { type:'melakarta', number:19, name:'Jhankaradhwani', melakarta:'Jhankaradhwani (19)',
+    aroh:['Sa','R2','G2','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G2','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Resonant',
+    phrases:['Sa R2 G2 M1 Pa','D1 N1 Sa','Sa N1 D1 Pa M1'],
+    tags:['Sampurna','Melakarta'], description:'Nineteenth melakarta meaning "the ringing sound". Parent of the popular Kapi.' },
+
+  { type:'melakarta', number:20, name:'Natabhairavi', melakarta:'Natabhairavi (20)',
+    aroh:['Sa','R2','G2','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G2','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Pathos',
+    phrases:['Sa R2 G2 M1 Pa','Ni Da Pa Ma','Ga Ma Pa Da Ni Sa'],
+    tags:['Sampurna','Melakarta'], description:'Parent of Bhairavi and Hindolam. The natural minor scale of Western music. One of the most important melakartas.' },
+
+  { type:'melakarta', number:21, name:'Keeravani', melakarta:'Keeravani (21)',
+    aroh:['Sa','R2','G2','M1','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G2','R2','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Night', mood:'Melancholic, Intense',
+    phrases:['Sa R2 G2 M1 Pa','N3 D1 Pa','Sa N3 D1 Pa M1 G2'],
+    tags:['Sampurna','Melakarta','Night'], description:'Equivalent to the harmonic minor scale. Known for its haunting beauty. Used in many film compositions.' },
+
+  { type:'melakarta', number:22, name:'Kharaharapriya', melakarta:'Kharaharapriya (22)',
+    aroh:['Sa','R2','G2','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G2','R2','Sa'],
+    vadi:'R2', samvadi:'Pa', time:'Any', mood:'Versatile',
+    phrases:['Sa Ri Ga Ma Pa','Da Ni Sa','Sa Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Melakarta'], description:'Parent of Kharaharapriya (Dorian mode equivalent). One of the most important melakartas, parent of Abhogi, Madhyamavati and many others.' },
+
+  { type:'melakarta', number:23, name:'Gourimanohari', melakarta:'Gourimanohari (23)',
+    aroh:['Sa','R2','G2','M1','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G2','R2','Sa'],
+    vadi:'G2', samvadi:'N3', time:'Any', mood:'Beautiful',
+    phrases:['Sa R2 G2 M1 Pa D2','N3 Sa','Sa N3 D2 Pa M1 G2'],
+    tags:['Sampurna','Melakarta'], description:'Twenty-third melakarta meaning "beautiful as Gauri". Has a pleasing, gentle quality.' },
+
+  { type:'melakarta', number:24, name:'Varunapriya', melakarta:'Varunapriya (24)',
+    aroh:['Sa','R2','G2','M1','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M1','G2','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Deep',
+    phrases:['Sa R2 G2 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1'],
+    tags:['Sampurna','Melakarta'], description:'Twenty-fourth melakarta meaning "beloved of Varuna (rain god)". Completes the fourth chakra.' },
+
+  // Chakra 5 — Bana
+  { type:'melakarta', number:25, name:'Mararanjani', melakarta:'Mararanjani (25)',
+    aroh:['Sa','R2','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R2','Sa'],
+    vadi:'G3', samvadi:'D1', time:'Any', mood:'Pleasing',
+    phrases:['Sa R2 G3 M1 Pa','D1 N1 Sa','N1 D1 Pa G3 R2 Sa'],
+    tags:['Sampurna','Melakarta'], description:'Twenty-fifth melakarta. Has a charming, pleasing character. Parent of the popular Surati.' },
+
+  { type:'melakarta', number:26, name:'Charukesi', melakarta:'Charukesi (26)',
+    aroh:['Sa','R2','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R2','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Afternoon', mood:'Romantic, Melancholic',
+    phrases:['Sa Ri Ga Ma Pa','Pa Da Ni Sa','Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Melakarta','Afternoon'], description:'A beautiful melakarta combining a major lower tetrachord with a minor upper tetrachord. Immensely popular in film music.' },
+
+  { type:'melakarta', number:27, name:'Sarasangi', melakarta:'Sarasangi (27)',
+    aroh:['Sa','R2','G3','M1','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G3','R2','Sa'],
+    vadi:'G3', samvadi:'N3', time:'Any', mood:'Sweet',
+    phrases:['Sa R2 G3 M1 Pa','N3 D1 Pa','Sa N3 D1 Pa G3'],
+    tags:['Sampurna','Melakarta'], description:'Twenty-seventh melakarta. Parent of some charming ragas. The D1-N3 gives an interesting tension.' },
+
+  { type:'melakarta', number:28, name:'Harikambhoji', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','G3','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'Pa', samvadi:'R2', time:'Evening', mood:'Heroic, Romantic',
+    phrases:['Sa Ri Ga Ma Pa Da','Ni Da Pa Ma Ga Ri Sa','Pa Ni Sa'],
+    tags:['Sampurna','Melakarta','Evening'], description:'Parent of Kambhoji and Mohanam. Equivalent to the Mixolydian mode. One of the most important melakartas in the system.' },
+
+  { type:'melakarta', number:29, name:'Dheerashankarabharanam', melakarta:'Dheerashankarabharanam (29)',
+    aroh:['Sa','R2','G3','M1','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Afternoon', mood:'Grandeur, Majesty',
+    phrases:['Sa Ri Ga Ma Pa','Pa Ma Ga Ri Sa','Ni Da Pa Ma Ga'],
+    tags:['Sampurna','Melakarta','Afternoon'], description:'The Western major scale. Considered the "king of melakartas". Parent of Shankarabharanam, Bilahari, Kedaragowla and many more.' },
+
+  { type:'melakarta', number:30, name:'Naganandini', melakarta:'Naganandini (30)',
+    aroh:['Sa','R2','G3','M1','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M1','G3','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Bright',
+    phrases:['Sa R2 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1 G3'],
+    tags:['Sampurna','Melakarta'], description:'Thirtieth melakarta completing the fifth chakra. Has a bright, full character.' },
+
+  // Chakra 6 — Rutu
+  { type:'melakarta', number:31, name:'Yagapriya', melakarta:'Yagapriya (31)',
+    aroh:['Sa','R3','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R3','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Ritualistic',
+    phrases:['Sa R3 G3 M1 Pa','D1 N1 Sa','Sa N1 D1 Pa M1 G3'],
+    tags:['Sampurna','Melakarta'], description:'Thirty-first melakarta meaning "beloved of sacrificial rites". First raga in the system to use R3.' },
+
+  { type:'melakarta', number:32, name:'Ragavardhini', melakarta:'Ragavardhini (32)',
+    aroh:['Sa','R3','G3','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G3','R3','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Enhancing',
+    phrases:['Sa R3 G3 M1 Pa','D1 N2 Sa','Sa N2 D1 Pa G3'],
+    tags:['Sampurna','Melakarta'], description:'Thirty-second melakarta meaning "enhancer of ragas".' },
+
+  { type:'melakarta', number:33, name:'Gangeyabhushani', melakarta:'Gangeyabhushani (33)',
+    aroh:['Sa','R3','G3','M1','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G3','R3','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Ornate',
+    phrases:['Sa R3 G3 M1 Pa','N3 D1 Pa','Sa N3 D1 Pa G3'],
+    tags:['Sampurna','Melakarta'], description:'Thirty-third melakarta meaning "adorned by Ganga". Has an ornate, decorated quality.' },
+
+  { type:'melakarta', number:34, name:'Vagadheeswari', melakarta:'Vagadheeswari (34)',
+    aroh:['Sa','R3','G3','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R3','Sa'],
+    vadi:'G3', samvadi:'N2', time:'Any', mood:'Commanding',
+    phrases:['Sa R3 G3 M1 Pa D2','N2 Sa','Sa N2 D2 Pa G3'],
+    tags:['Sampurna','Melakarta'], description:'Thirty-fourth melakarta meaning "goddess of speech". Has a commanding, assertive quality.' },
+
+  { type:'melakarta', number:35, name:'Shulini', melakarta:'Shulini (35)',
+    aroh:['Sa','R3','G3','M1','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G3','R3','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Sharp',
+    phrases:['Sa R3 G3 M1 Pa D2','N3 Sa','Sa N3 D2 Pa G3'],
+    tags:['Sampurna','Melakarta'], description:'Thirty-fifth melakarta. Has a sharp, piercing quality from the R3 and high svaras.' },
+
+  { type:'melakarta', number:36, name:'Chalanata', melakarta:'Chalanata (36)',
+    aroh:['Sa','R3','G3','M1','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M1','G3','R3','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Any', mood:'Dynamic',
+    phrases:['Sa R3 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa G3'],
+    tags:['Sampurna','Melakarta'], description:'Thirty-sixth and last of the suddha madhyama melakartas. Marks the midpoint of the 72-raga system.' },
+
+  // Chakra 7 — Rishi (Prati Madhyama begins)
+  { type:'melakarta', number:37, name:'Salagam', melakarta:'Salagam (37)',
+    aroh:['Sa','R1','G1','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G1','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Intense',
+    phrases:['Sa R1 G1 M2 Pa','D1 N1 Sa','Sa N1 D1 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'First prati madhyama melakarta. The teevra Ma gives all prati madhyama ragas their characteristic brightness.' },
+
+  { type:'melakarta', number:38, name:'Jalarnavam', melakarta:'Jalarnavam (38)',
+    aroh:['Sa','R1','G1','M2','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M2','G1','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Flowing',
+    phrases:['Sa R1 G1 M2 Pa','D1 N2 Sa','Sa N2 D1 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Thirty-eighth melakarta meaning "ocean". The teevra Ma with lower svaras creates a flowing quality.' },
+
+  { type:'melakarta', number:39, name:'Jhalavarali', melakarta:'Jhalavarali (39)',
+    aroh:['Sa','R1','G1','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G1','R1','Sa'],
+    vadi:'M2', samvadi:'G1', time:'Any', mood:'Brooding',
+    phrases:['Sa R1 G1 M2 Pa','N3 D1 Pa M2','G1 R1 Sa'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Thirty-ninth melakarta with a heavy, brooding quality from its dense cluster of low svaras.' },
+
+  { type:'melakarta', number:40, name:'Navanitam', melakarta:'Navanitam (40)',
+    aroh:['Sa','R1','G1','M2','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M2','G1','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Buttery',
+    phrases:['Sa R1 G1 M2 Pa D2','N2 Sa','Sa N2 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fortieth melakarta meaning "butter". Has a smooth, flowing quality.' },
+
+  { type:'melakarta', number:41, name:'Pavani', melakarta:'Pavani (41)',
+    aroh:['Sa','R1','G1','M2','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G1','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Purifying',
+    phrases:['Sa R1 G1 M2 Pa D2','N3 Sa','Sa N3 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-first melakarta meaning "purifier (wind)". Has a bright, airy quality.' },
+
+  { type:'melakarta', number:42, name:'Raghupriya', melakarta:'Raghupriya (42)',
+    aroh:['Sa','R1','G1','M2','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M2','G1','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Regal',
+    phrases:['Sa R1 G1 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-second melakarta meaning "beloved of Raghu (Rama)". Has a regal, noble quality.' },
+
+  // Chakra 8 — Vasu
+  { type:'melakarta', number:43, name:'Gavambodhi', melakarta:'Gavambodhi (43)',
+    aroh:['Sa','R1','G2','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G2','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Earthy',
+    phrases:['Sa R1 G2 M2 Pa','D1 N1 Sa','N1 D1 Pa M2 G2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-third melakarta meaning "knowledge of cows". Has an earthy, grounded quality.' },
+
+  { type:'melakarta', number:44, name:'Bhavapriya', melakarta:'Bhavapriya (44)',
+    aroh:['Sa','R1','G2','M2','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M2','G2','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Emotional',
+    phrases:['Sa R1 G2 M2 Pa','D1 N2 Sa','N2 D1 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-fourth melakarta meaning "beloved of emotions". Has an emotionally resonant quality.' },
+
+  { type:'melakarta', number:45, name:'Shubhapantuvarali', melakarta:'Shubhapantuvarali (45)',
+    aroh:['Sa','R1','M2','Pa','D1','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G2','R1','Sa'],
+    vadi:'D1', samvadi:'G2', time:'Morning', mood:'Serious, Deep',
+    phrases:['Sa Ri Ga Ma Pa','Ga Ma Pa Da Ni','Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Melakarta','Morning'], description:'Parent of the great Todi. One of the most celebrated melakartas. Has immense depth and is rich in gamaka possibilities.' },
+
+  { type:'melakarta', number:46, name:'Shadvidhamargini', melakarta:'Shadvidhamargini (46)',
+    aroh:['Sa','R1','G2','M2','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M2','G2','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Versatile',
+    phrases:['Sa R1 G2 M2 Pa D2','N2 Sa','Sa N2 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-sixth melakarta meaning "one with six paths". Has a versatile, exploratory quality.' },
+
+  { type:'melakarta', number:47, name:'Suvarnangi', melakarta:'Suvarnangi (47)',
+    aroh:['Sa','R1','G2','M2','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G2','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Golden',
+    phrases:['Sa R1 G2 M2 Pa D2','N3 Sa','Sa N3 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-seventh melakarta meaning "golden-limbed". Has a warm, golden quality.' },
+
+  { type:'melakarta', number:48, name:'Divyamani', melakarta:'Divyamani (48)',
+    aroh:['Sa','R1','G2','M2','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M2','G2','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Divine',
+    phrases:['Sa R1 G2 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-eighth melakarta meaning "divine gem". Completes the eighth chakra.' },
+
+  // Chakra 9 — Brahma
+  { type:'melakarta', number:49, name:'Dhavalambari', melakarta:'Dhavalambari (49)',
+    aroh:['Sa','R1','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R1','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'White, Pure',
+    phrases:['Sa R1 G3 M2 Pa','D1 N1 Sa','Sa N1 D1 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-ninth melakarta meaning "white cloud". Has a pure, open quality.' },
+
+  { type:'melakarta', number:50, name:'Namanarayani', melakarta:'Namanarayani (50)',
+    aroh:['Sa','R1','G3','M2','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M2','G3','R1','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Devotional',
+    phrases:['Sa R1 G3 M2 Pa','D1 N2 Sa','N2 D1 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fiftieth melakarta meaning "obeisance to Narayana". Has a devotional quality.' },
+
+  { type:'melakarta', number:51, name:'Kamavardhini', melakarta:'Kamavardhini (51)',
+    aroh:['Sa','R1','G3','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G3','R1','Sa'],
+    vadi:'G3', samvadi:'N3', time:'Any', mood:'Desire-enhancing',
+    phrases:['Sa R1 G3 M2 Pa','N3 D1 Pa M2','G3 R1 Sa'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-first melakarta meaning "enhancer of desires". Also called Pantuvarali, parent of many important ragas.' },
+
+  { type:'melakarta', number:52, name:'Ramapriya', melakarta:'Ramapriya (52)',
+    aroh:['Sa','R1','G3','M2','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M2','G3','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Beloved',
+    phrases:['Sa R1 G3 M2 Pa D2','N2 Sa','Sa N2 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-second melakarta meaning "beloved of Rama". Has a charming, devotional quality.' },
+
+  { type:'melakarta', number:53, name:'Gamanashrama', melakarta:'Gamanashrama (53)',
+    aroh:['Sa','R1','G3','M2','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G3','R1','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Wandering',
+    phrases:['Sa R1 G3 M2 Pa D2','N3 Sa','Sa N3 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-third melakarta. Has a wandering, exploratory quality.' },
+
+  { type:'melakarta', number:54, name:'Vishwambhari', melakarta:'Vishwambhari (54)',
+    aroh:['Sa','R1','G3','M2','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M2','G3','R1','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Universal',
+    phrases:['Sa R1 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-fourth melakarta meaning "sustainer of the universe". Completes the ninth chakra.' },
+
+  // Chakra 10 — Disi
+  { type:'melakarta', number:55, name:'Shamalangi', melakarta:'Shamalangi (55)',
+    aroh:['Sa','R2','G2','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G2','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Dark, Dense',
+    phrases:['Sa R2 G2 M2 Pa','D1 N1 Sa','N1 D1 Pa M2 G2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-fifth melakarta. Has a dark, dense quality from its combination of svaras.' },
+
+  { type:'melakarta', number:56, name:'Shanmukhapriya', melakarta:'Shanmukhapriya (56)',
+    aroh:['Sa','R2','G2','M2','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M2','G2','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Evening', mood:'Pleasing, Popular',
+    phrases:['Sa R2 G2 M2 Pa','D1 N2 Sa','N2 D1 Pa M2 Ga Ri Sa'],
+    tags:['Sampurna','Melakarta','Evening','Prati Madhyama'], description:'Fifty-sixth melakarta meaning "beloved of Shanmukha (Murugan)". Very popular in film music, equivalent to the Lydian dominant scale.' },
+
+  { type:'melakarta', number:57, name:'Simhendramadhyamam', melakarta:'Simhendramadhyamam (57)',
+    aroh:['Sa','R2','G2','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G2','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Leonine',
+    phrases:['Sa R2 G2 M2 Pa','N3 D1 Pa M2','Ga Ri Sa'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-seventh melakarta meaning "middle of lion kings". Has a powerful, leonine quality.' },
+
+  { type:'melakarta', number:58, name:'Hemavati', melakarta:'Hemavati (58)',
+    aroh:['Sa','R2','G2','M2','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M2','G2','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Golden',
+    phrases:['Sa R2 G2 M2 Pa D2','N2 Sa','Sa N2 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-eighth melakarta meaning "golden". Has a warm, rich quality.' },
+
+  { type:'melakarta', number:59, name:'Dharmavati', melakarta:'Dharmavati (59)',
+    aroh:['Sa','R2','G2','M2','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G2','R2','Sa'],
+    vadi:'M2', samvadi:'R2', time:'Any', mood:'Righteous',
+    phrases:['Sa R2 G2 M2 Pa D2','N3 Sa','Sa N3 D2 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-ninth melakarta meaning "virtuous". Has a noble, righteous quality.' },
+
+  { type:'melakarta', number:60, name:'Neetimati', melakarta:'Neetimati (60)',
+    aroh:['Sa','R2','G2','M2','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M2','G2','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Just',
+    phrases:['Sa R2 G2 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixtieth melakarta meaning "principled". Completes the tenth chakra.' },
+
+  // Chakra 11 — Rudra
+  { type:'melakarta', number:61, name:'Kantamani', melakarta:'Kantamani (61)',
+    aroh:['Sa','R2','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Gem-like',
+    phrases:['Sa R2 G3 M2 Pa','D1 N1 Sa','N1 D1 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-first melakarta meaning "neck gem". Has a sparkling, gem-like quality.' },
+
+  { type:'melakarta', number:62, name:'Rishabhapriya', melakarta:'Rishabhapriya (62)',
+    aroh:['Sa','R2','G3','M2','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Bull-like',
+    phrases:['Sa R2 G3 M2 Pa','D1 N2 Sa','N2 D1 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-second melakarta meaning "beloved of Rishabha (the bull — Nandi)". Has a strong, steady quality.' },
+
+  { type:'melakarta', number:63, name:'Latangi', melakarta:'Latangi (63)',
+    aroh:['Sa','R2','G3','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Creeper-like',
+    phrases:['Sa R2 G3 M2 Pa','N3 D1 Pa','Sa N3 D1 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-third melakarta meaning "creeper". Has a sinuous, winding quality.' },
+
+  { type:'melakarta', number:64, name:'Vachaspati', melakarta:'Vachaspati (64)',
+    aroh:['Sa','R2','G3','M2','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Eloquent',
+    phrases:['Sa R2 G3 M2 Pa D2','N2 Sa','Sa N2 D2 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-fourth melakarta meaning "lord of speech". Equivalent to the Lydian mode. Has an eloquent, flowing quality.' },
+
+  { type:'melakarta', number:65, name:'Mechakalyani', melakarta:'Mechakalyani (65)',
+    aroh:['Sa','R2','G3','M2','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Evening', mood:'Auspicious, Serene',
+    phrases:['Sa Ri Ga Ma Pa','Ni Da Pa Ma Ga Ri Sa','Ga Ma Pa Da Ni Sa'],
+    tags:['Sampurna','Melakarta','Evening'], description:'Parent of Kalyani and Hamsadhwani. One of the most important prati madhyama melakartas. Has a bright, uplifting quality.' },
+
+  { type:'melakarta', number:66, name:'Chitrambari', melakarta:'Chitrambari (66)',
+    aroh:['Sa','R2','G3','M2','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Colourful',
+    phrases:['Sa R2 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-sixth melakarta meaning "colourful sky". Completes the eleventh chakra.' },
+
+  // Chakra 12 — Aditya
+  { type:'melakarta', number:67, name:'Sucharitra', melakarta:'Sucharitra (67)',
+    aroh:['Sa','R3','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R3','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Virtuous',
+    phrases:['Sa R3 G3 M2 Pa','D1 N1 Sa','Sa N1 D1 Pa M2'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-seventh melakarta meaning "virtuous character". Has a dignified, upright quality.' },
+
+  { type:'melakarta', number:68, name:'Jyotisvarupini', melakarta:'Jyotisvarupini (68)',
+    aroh:['Sa','R3','G3','M2','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M2','G3','R3','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Luminous',
+    phrases:['Sa R3 G3 M2 Pa','D1 N2 Sa','N2 D1 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-eighth melakarta meaning "embodiment of light". Has a luminous, radiant quality.' },
+
+  { type:'melakarta', number:69, name:'Dhatuvardani', melakarta:'Dhatuvardani (69)',
+    aroh:['Sa','R3','G3','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G3','R3','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Enriching',
+    phrases:['Sa R3 G3 M2 Pa','N3 D1 Pa','Sa N3 D1 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-ninth melakarta meaning "enhancer of elements". Has an enriching, strengthening quality.' },
+
+  { type:'melakarta', number:70, name:'Nasikabhushani', melakarta:'Nasikabhushani (70)',
+    aroh:['Sa','R3','G3','M2','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M2','G3','R3','Sa'],
+    vadi:'M2', samvadi:'R3', time:'Any', mood:'Adorned',
+    phrases:['Sa R3 G3 M2 Pa D2','N2 Sa','Sa N2 D2 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Seventieth melakarta meaning "nose ornament". Has a decorative, ornamented quality.' },
+
+  { type:'melakarta', number:71, name:'Kosalam', melakarta:'Kosalam (71)',
+    aroh:['Sa','R3','G3','M2','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G3','R3','Sa'],
+    vadi:'M2', samvadi:'G3', time:'Any', mood:'Regal',
+    phrases:['Sa R3 G3 M2 Pa D2','N3 Sa','Sa N3 D2 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Seventy-first melakarta named after Kosala (ancient kingdom). Has a regal, dignified quality.' },
+
+  { type:'melakarta', number:72, name:'Rasikapriya', melakarta:'Rasikapriya (72)',
+    aroh:['Sa','R3','G3','M2','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M2','G3','R3','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Beloved of Connoisseurs',
+    phrases:['Sa R3 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2 G3'],
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'The seventy-second and final melakarta, meaning "beloved of connoisseurs". Completes the entire system — an apt final raga for the discerning listener.' },
+
+  // ══════════════════════════════════════════
+  // MAJOR JANYA RAGAS
+  // ══════════════════════════════════════════
+
+  { type:'janya', number:null, name:'Bhairavi', melakarta:'Natabhairavi (20)',
+    aroh:['Sa','R1','G2','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Morning', mood:'Pathos, Longing',
+    phrases:['Sa Ri Ga Ma Pa','Ni Da Pa Ma Ga Ri Sa','Ma Pa Da Ni Sa'],
+    tags:['Sampurna','Morning','Bhakti'], description:'One of the most beloved ragas, evoking deep pathos and devotion. Widely used in film and classical music. Uses vakra and borrowed swaras freely.' },
+
+  { type:'janya', number:null, name:'Todi', melakarta:'Shubhapantuvarali (45)',
+    aroh:['Sa','R1','M2','Pa','D1','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G2','R1','Sa'],
+    vadi:'D1', samvadi:'G2', time:'Morning', mood:'Serious, Deep',
+    phrases:['Sa Ri Ga Ma Pa','Ga Ma Pa Da Ni','Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Morning','Serious'], description:'One of the most important ragas in Carnatic music. Profound, serious, and deeply expressive. Rich in gamaka.' },
+
+  { type:'janya', number:null, name:'Kalyani', melakarta:'Mechakalyani (65)',
+    aroh:['Sa','R2','G3','M2','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Evening', mood:'Auspicious, Serene',
+    phrases:['Sa Ri Ga Ma Ga Ri','Ni Da Pa Ma Ga','Ga Ma Pa Da Ni Sa'],
+    tags:['Sampurna','Evening','Auspicious'], description:'Considered auspicious and majestic. Equivalent to Yaman in Hindustani. One of the most widely performed ragas.' },
+
+  { type:'janya', number:null, name:'Shankarabharanam', melakarta:'Dheerashankarabharanam (29)',
+    aroh:['Sa','R2','G3','M1','Pa','D2','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Afternoon', mood:'Grandeur, Majesty',
+    phrases:['Sa Ri Ga Ma Pa','Pa Ma Ga Ri Sa','Ni Da Pa Ma Ga'],
+    tags:['Sampurna','Afternoon','Majestic'], description:'The Western major scale. Called the "king of ragas". Used for grand, majestic compositions by all the Trinity.' },
+
+  { type:'janya', number:null, name:'Kambhoji', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','G3','M1','Pa','D2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'Pa', samvadi:'R2', time:'Evening', mood:'Heroic, Romantic',
+    phrases:['Sa Ri Ga Ma Pa Da','Pa Ma Ga Ri Sa','Ni Da Pa'],
+    tags:['Audava-Sampurna','Evening','Heroic'], description:'Omits Ni in ascent. Majestic and heroic. Popular for tillanas, padam and dance compositions.' },
+
+  { type:'janya', number:null, name:'Hindolam', melakarta:'Natabhairavi (20)',
+    aroh:['Sa','G1','M1','D1','N1','Sa'], avaroh:['Sa','N1','D1','M1','G1','Sa'],
+    vadi:'G2', samvadi:'N2', time:'Late Night', mood:'Contemplative, Devotional',
+    phrases:['Sa Ga Ma Da Ni Sa','Ni Da Ma Ga Sa','Ga Ma Da Ni'],
+    tags:['Audava','Night','Devotional'], description:'A pentatonic raga of immense depth. Deeply meditative and devotional. Equivalent to Malkauns in Hindustani.' },
+
+  { type:'janya', number:null, name:'Hamsadhwani', melakarta:'Mechakalyani (65)',
+    aroh:['Sa','R2','G3','Pa','N3','Sa'], avaroh:['Sa','N3','Pa','G3','R2','Sa'],
+    vadi:'Pa', samvadi:'R2', time:'Evening', mood:'Cheerful, Auspicious',
+    phrases:['Sa Ri Ga Pa Ni Sa','Sa Ni Pa Ga Ri Sa','Pa Ni Sa'],
+    tags:['Audava','Evening','Cheerful'], description:'A delightful pentatonic raga used to open concerts and auspicious occasions. Very popular and instantly recognizable.' },
+
+  { type:'janya', number:null, name:'Charukesi', melakarta:'Charukesi (26)',
+    aroh:['Sa','R2','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R2','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Afternoon', mood:'Romantic, Melancholic',
+    phrases:['Sa Ri Ga Ma Pa','Pa Da Ni Sa','Ni Da Pa Ma Ga'],
+    tags:['Sampurna','Afternoon','Romantic'], description:'A beautiful raga combining a major lower tetrachord with a minor upper tetrachord. Deeply popular in film music across South India.' },
+
+  { type:'janya', number:null, name:'Mohanam', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','G3','Pa','D2','Sa'], avaroh:['Sa','D2','Pa','G3','R2','Sa'],
+    vadi:'G3', samvadi:'D2', time:'Evening', mood:'Pleasing, Romantic',
+    phrases:['Sa Ri Ga Pa Da Sa','Sa Da Pa Ga Ri Sa','Ga Pa Da Sa'],
+    tags:['Audava','Evening','Romantic'], description:'A pentatonic raga equivalent to the major pentatonic scale. Universally loved and widely used in all Indian film music traditions.' },
+
+  { type:'janya', number:null, name:'Madhyamavati', melakarta:'Kharaharapriya (22)',
+    aroh:['Sa','R2','M1','Pa','N2','Sa'], avaroh:['Sa','N2','Pa','M1','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Night', mood:'Devotional, Serene',
+    phrases:['Sa Ri Ma Pa Ni Sa','Ni Pa Ma Ri Sa','Pa Ma Ri Sa'],
+    tags:['Audava','Night','Devotional'], description:'A pentatonic raga equivalent to Megh in Hindustani. Known for intensely emotive devotional compositions.' },
+
+  { type:'janya', number:null, name:'Varali', melakarta:'Tanarupi (6)',
+    aroh:['Sa','R1','G2','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G2','R1','Sa'],
+    vadi:'G2', samvadi:'N3', time:'Early Morning', mood:'Prayerful, Solemn',
+    phrases:['Sa Ri Ga Ma Pa','Ga Ma Pa Da Ni','Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Morning','Prayerful'], description:'An ancient, weighty raga performed at temples at dawn. Considered highly auspicious and sacred.' },
+
+  { type:'janya', number:null, name:'Saveri', melakarta:'Malahari (15)',
+    aroh:['Sa','R1','M1','Pa','D1','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G3','R1','Sa'],
+    vadi:'R1', samvadi:'Pa', time:'Morning', mood:'Melancholic, Sweet',
+    phrases:['Sa Ri Ma Pa Da Sa','Ni Da Pa Ma Ga Ri Sa','Pa Da Sa'],
+    tags:['Audava-Sampurna','Morning','Melancholic'], description:'A morning raga with a sweet, melancholic quality. Popular for compositions on separation and longing.' },
+
+  { type:'janya', number:null, name:'Bilahari', melakarta:'Dheerashankarabharanam (29)',
+    aroh:['Sa','R2','G3','Pa','D2','Sa'], avaroh:['Sa','N3','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'G3', samvadi:'D2', time:'Morning', mood:'Cheerful, Bright',
+    phrases:['Sa Ri Ga Pa Da Sa','Ni Da Pa Ma Ga Ri Sa','Pa Da Ni Sa'],
+    tags:['Audava-Sampurna','Morning','Cheerful'], description:'An audava-sampurna raga with a bright, cheerful quality. Omits Ma and Ni in ascent. Popular for mangalams and auspicious pieces.' },
+
+  { type:'janya', number:null, name:'Kedaragowla', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','M1','G3','M1','Pa','N2','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Evening', mood:'Sweet, Bhakti',
+    phrases:['Sa Ma Ga Ma Pa Ni Da Ni Sa','N2 D2 Pa M1 G3 R2 Sa','M1 G3 M1 Pa'],
+    tags:['Vakra','Evening','Bhakti'], description:'A vakra raga with characteristic zigzag movements in ascent. Immensely popular for devotional compositions.' },
+
+  { type:'janya', number:null, name:'Abhogi', melakarta:'Kharaharapriya (22)',
+    aroh:['Sa','R2','G2','M1','D2','Sa'], avaroh:['Sa','D2','M1','G2','R2','Sa'],
+    vadi:'G2', samvadi:'D2', time:'Any', mood:'Pleasing, Light',
+    phrases:['Sa Ri Ga Ma Da Sa','Sa Da Ma Ga Ri Sa','Ga Ma Da Sa'],
+    tags:['Audava','Pleasing'], description:'A simple, pleasing pentatonic raga omitting Pa and Ni. Its simplicity makes it very accessible and popular for light music.' },
+
+  { type:'janya', number:null, name:'Kapi', melakarta:'Kharaharapriya (22)',
+    aroh:['Sa','R2','G2','M1','Pa','N2','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G2','R2','Sa'],
+    vadi:'M1', samvadi:'Pa', time:'Night', mood:'Light, Romantic',
+    phrases:['Sa Ri Ga Ma Pa Ni Da Ni Sa','N2 D2 Pa M1 G2 Ri Sa','Ma Pa Ni Sa'],
+    tags:['Vakra','Night','Romantic'], description:'A popular raga often associated with folk and light music. Uses N2 and N3 in different contexts, giving it a colourful, flexible character.' },
+
+  { type:'janya', number:null, name:'Surutti', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','M1','Pa','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'M1', samvadi:'Pa', time:'Evening', mood:'Sweet, Bhakti',
+    phrases:['Sa Ri Ma Pa Ni Sa','Ni Da Pa Ma Ga Ri Sa','Pa Ma Ga Ri Sa'],
+    tags:['Audava-Sampurna','Evening','Bhakti'], description:'A popular raga for devotional compositions, omitting Ga in ascent. Sweet and accessible, widely used in bhajans.' },
+
+  { type:'janya', number:null, name:'Punnagavarali', melakarta:'Hanumatodi (8)',
+    aroh:['Sa','R1','M1','Pa','N3','Sa'], avaroh:['Sa','N3','Pa','M1','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Morning', mood:'Plaintive, Melancholic',
+    phrases:['Sa Ri Ma Pa Ni Sa','Ni Pa Ma Ri Sa','Pa Ni Sa'],
+    tags:['Audava','Morning','Melancholic'], description:'A simple pentatonic raga with an extremely plaintive, melancholic quality. Instantly recognizable. Very popular in film music for sad songs.' },
+
+  { type:'janya', number:null, name:'Begada', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','G3','M1','Pa','G3','M1','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'G3', samvadi:'N2', time:'Morning', mood:'Grand, Majestic',
+    phrases:['Sa Ri Ga Ma Pa Ga Ma Da Ni Sa','N2 D2 Pa M1 G3 Ri Sa','M1 G3 M1 Pa'],
+    tags:['Vakra','Morning','Majestic'], description:'A vakra raga with a grand, majestic character. Has characteristic zigzag movements and is rich in gamaka possibilities.' },
+
+  { type:'janya', number:null, name:'Navaroj', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','G3','M1','Pa','D2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Evening', mood:'Grand, Popular',
+    phrases:['Sa Ri Ga Ma Pa Da Sa','N2 Da Pa M1 Ga Ri Sa','Pa Da Sa'],
+    tags:['Audava-Sampurna','Evening'], description:'Similar to Kambhoji but with consistent usage. A grand raga very popular in film music.' },
+
+  { type:'janya', number:null, name:'Amrutavarshini', melakarta:'Kamavardhini (51)',
+    aroh:['Sa','G3','M2','Pa','N3','Sa'], avaroh:['Sa','N3','Pa','M2','G3','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Any', mood:'Rain-evoking',
+    phrases:['Sa Ga Ma Pa Ni Sa','Ni Pa Ma Ga Sa','Ma Pa Ni Sa'],
+    tags:['Audava','Rain'], description:'Literally means "raining nectar". Traditionally believed to invoke rain. A pentatonic raga with an intense, yearning quality.' },
+
+  { type:'janya', number:null, name:'Nattai', melakarta:'Kanakangi (1)',
+    aroh:['Sa','R3','G3','M1','Pa','N3','Sa'], avaroh:['Sa','N3','Pa','M1','G3','R3','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Any', mood:'Grand, Heroic',
+    phrases:['Sa R3 Ga Ma Pa Ni Sa','Ni Pa Ma Ga R3 Sa','Pa Ni Sa'],
+    tags:['Audava-Sampurna','Heroic'], description:'A grand, heroic raga often used for large compositions and mangalams. Has a majestic, imposing quality.' },
+
+  { type:'janya', number:null, name:'Gambhiranattai', melakarta:'Kanakangi (1)',
+    aroh:['Sa','R3','M1','Pa','N3','Sa'], avaroh:['Sa','N3','Pa','M1','G3','R3','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Any', mood:'Serious, Grand',
+    phrases:['Sa R3 Ma Pa Ni Sa','Ni Pa M1 G3 R3 Sa','Pa Ni Sa'],
+    tags:['Audava','Serious'], description:'The serious, grander version of Nattai. Used for weighty, important compositions.' },
+
+  { type:'janya', number:null, name:'Panthuvarali', melakarta:'Kamavardhini (51)',
+    aroh:['Sa','R1','G3','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G3','R1','Sa'],
+    vadi:'G3', samvadi:'N3', time:'Morning', mood:'Serious, Grand',
+    phrases:['Sa Ri Ga Ma Pa','N3 D1 Pa M2','Ga Ma Pa Da Ni Sa'],
+    tags:['Sampurna','Morning','Serious'], description:'A raga of great depth and seriousness. Used for weighty compositions. The vakra nature of some svaras gives it a distinctive zigzag movement.' },
+
+  { type:'janya', number:null, name:'Saranga', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','M1','Pa','D2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','R2','Sa'],
+    vadi:'M1', samvadi:'Pa', time:'Noon', mood:'Intense, Bright',
+    phrases:['Sa Ri Ma Pa Da Sa','N2 Da Pa M1 Ri Sa','Pa Da Sa Ni Da Pa'],
+    tags:['Audava','Noon'], description:'A bright, intense midday raga. Equivalent to Sarang in Hindustani. Has a characteristic upward leap.' },
+
+  { type:'janya', number:null, name:'Desh', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','M1','Pa','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','Sa'],
+    vadi:'N2', samvadi:'G3', time:'Night', mood:'Romantic, Patriotic',
+    phrases:['Sa Ri Ma Pa Ni Sa','Ni Da Pa Ma Ga Ri Sa','Pa Ni Sa'],
+    tags:['Audava-Sampurna','Night','Romantic'], description:'A popular and accessible raga widely used in light classical and film music. Very close to Surutti but treated differently.' },
+
+  { type:'janya', number:null, name:'Sahana', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','G3','M1','Pa','G3','M1','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R2','G3','R2','Sa'],
+    vadi:'M1', samvadi:'Pa', time:'Evening', mood:'Pathos, Bhakti',
+    phrases:['Sa Ri Ga Ma Pa Ga Ma Da Ni Sa','Ni Da Pa Ma Ga Ri Ga Ri Sa'],
+    tags:['Vakra','Evening','Bhakti'], description:'A vakra raga with characteristic beautiful meanderings. Known for extraordinarily emotive compositions expressing bhakti and pathos.' },
+
+  { type:'janya', number:null, name:'Atana', melakarta:'Kharaharapriya (22)',
+    aroh:['Sa','R2','Pa','M1','Pa','N2','Sa'], avaroh:['Sa','N2','D2','N2','Pa','M1','G2','R2','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Night', mood:'Heroic, Grand',
+    phrases:['Sa Ri Pa Ma Pa Ni Sa','Ni Da Ni Pa Ma Ga Ri Sa'],
+    tags:['Vakra','Night','Heroic'], description:'A grand, heroic vakra raga with a strong, assertive character. Often used for compositions depicting valour and grandeur.' },
+
+  { type:'janya', number:null, name:'Anandabhairavi', melakarta:'Natabhairavi (20)',
+    aroh:['Sa','R2','G2','M1','Pa','D1','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R2','Sa'],
+    vadi:'G2', samvadi:'D1', time:'Morning', mood:'Sweet, Melancholic',
+    phrases:['Sa Ri Ga Ma Pa Da Sa','Ni Da Pa Ma Ga Ri Sa','Ga Ma Pa Da Sa'],
+    tags:['Audava-Sampurna','Morning'], description:'A raga of great beauty — sweet yet melancholic. Has a distinctive feminine quality and is beloved for its emotive compositions.' },
+
+  { type:'janya', number:null, name:'Sindhu Bhairavi', melakarta:'Natabhairavi (20)',
+    aroh:['Sa','R2','G2','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G2','R2','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Morning', mood:'Melancholic, Film',
+    phrases:['Sa Ri Ga Ma Pa','Ni Da Pa Ma Ga Ri Sa','Ma Pa Da Ni Sa'],
+    tags:['Sampurna','Morning','Film'], description:'A popular film raga closely related to Bhairavi. Uses mixed svaras freely. Beloved for its melancholic, emotional quality.' },
+
+  { type:'janya', number:null, name:'Huseni', melakarta:'Natabhairavi (20)',
+    aroh:['Sa','R2','G2','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R2','Sa'],
+    vadi:'G2', samvadi:'N2', time:'Morning', mood:'Melancholic, Bhakti',
+    phrases:['Sa Ri Ga Ma Pa','Da Ni Sa','Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Morning','Bhakti'], description:'An important morning raga with a melancholic, devotional quality. Many great compositions by Thyagaraja are set in Huseni.' },
+
+  { type:'janya', number:null, name:'Sriranjani', melakarta:'Natabhairavi (20)',
+    aroh:['Sa','R2','G2','M1','D1','N2','Sa'], avaroh:['Sa','N2','D1','M1','G2','R2','Sa'],
+    vadi:'G2', samvadi:'N2', time:'Night', mood:'Serene, Bhakti',
+    phrases:['Sa Ri Ga Ma Da Ni Sa','Ni Da Ma Ga Ri Sa','Ga Ma Da Ni Sa'],
+    tags:['Shadava','Night','Bhakti'], description:'A shadava raga omitting Pa. Has an intensely serene, devotional quality. Very popular in film music.' },
+
+  { type:'janya', number:null, name:'Dhanyasi', melakarta:'Hanumatodi (8)',
+    aroh:['Sa','G2','M1','Pa','N2','Sa'], avaroh:['Sa','N2','Pa','M1','G2','Sa'],
+    vadi:'G2', samvadi:'N2', time:'Morning', mood:'Melancholic, Devotional',
+    phrases:['Sa Ga Ma Pa Ni Sa','Ni Pa Ma Ga Sa','Ga Ma Pa Ni Sa'],
+    tags:['Audava','Morning','Devotional'], description:'A pentatonic raga of gentle, melancholic beauty. Has many beloved devotional compositions. Equivalent to Dhanashri.' },
+
+  { type:'janya', number:null, name:'Reethigowla', melakarta:'Kharaharapriya (22)',
+    aroh:['Sa','R2','G2','M1','Pa','N2','Sa'], avaroh:['Sa','N2','Pa','M1','G2','R2','G2','Sa'],
+    vadi:'G2', samvadi:'N2', time:'Morning', mood:'Bhakti, Sweet',
+    phrases:['Sa Ri Ga Ma Pa Ni Sa','Ni Pa Ma Ga Ri Ga Sa','Ga Ma Pa Ni'],
+    tags:['Sampurna','Morning','Bhakti'], description:'A popular raga for bhakti compositions with a characteristic vakra movement in the descent. Very sweet and appealing.' },
+
+  { type:'janya', number:null, name:'Nilambari', melakarta:'Harikambhoji (28)',
+    aroh:['Sa','R2','G3','M1','Pa','N2','Sa'], avaroh:['Sa','N2','Pa','M1','G3','R2','Sa'],
+    vadi:'Pa', samvadi:'Sa', time:'Night', mood:'Lullaby, Soothing',
+    phrases:['Sa Ri Ga Ma Pa Ni Sa','Ni Pa Ma Ga Ri Sa','Pa Ni Sa'],
+    tags:['Audava-Sampurna','Night','Lullaby'], description:'Famous as a lullaby raga — deeply soothing and sleep-inducing. Many great compositions for children and lullabies.' },
+
+  { type:'janya', number:null, name:'Vasanta', melakarta:'Mechakalyani (65)',
+    aroh:['Sa','M2','G3','M2','Pa','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'Sa', time:'Spring/Any', mood:'Playful, Spring',
+    phrases:['Sa M2 Ga M2 Pa Ni Sa','Ni Da Pa M2 Ga Ri Sa','M2 Pa Ni Sa'],
+    tags:['Vakra','Spring','Playful'], description:'A vakra raga associated with the spring season. Playful and colourful movements, particularly in the ascent.' },
+
+  { type:'janya', number:null, name:'Gowla', melakarta:'Mayamalavagowla (15)',
+    aroh:['Sa','R1','M1','Pa','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G3','R1','Sa'],
+    vadi:'M1', samvadi:'Sa', time:'Morning', mood:'Devotional, Dignified',
+    phrases:['Sa Ri Ma Pa Ni Sa','Ni Da Pa Ma Ga Ri Sa','Pa Ni Sa'],
+    tags:['Audava-Sampurna','Morning','Devotional'], description:'An ancient and dignified morning raga, parent of the Gowla family. Deeply devotional and revered.' },
+
+  { type:'janya', number:null, name:'Mukhari', melakarta:'Bhavapriya (44)',
+    aroh:['Sa','R1','G2','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R1','Sa'],
+    vadi:'M1', samvadi:'Pa', time:'Morning', mood:'Melancholic, Poignant',
+    phrases:['Sa Ri Ga Ma Pa','Da Ni Sa','Ni Da Pa Ma Ga Ri Sa'],
+    tags:['Sampurna','Morning','Melancholic'], description:'A deeply poignant morning raga equivalent to Bhairavi with slight variations. Has extraordinary depth and emotional range.' },
+
+  { type:'janya', number:null, name:'Poorvikalyani', melakarta:'Mechakalyani (65)',
+    aroh:['Sa','R2','G3','M2','Pa','N3','Sa'], avaroh:['Sa','N3','Pa','M2','G3','R2','Sa'],
+    vadi:'M2', samvadi:'Pa', time:'Evening', mood:'Grand, Majestic',
+    phrases:['Sa Ri Ga Ma Pa Ni Sa','Ni Pa Ma Ga Ri Sa','Ma Pa Ni Sa'],
+    tags:['Audava-Sampurna','Evening','Majestic'], description:'An audava-sampurna raga from the Kalyani family. Grand and majestic, often used for concerts. Omits Dha.' },
+
+  { type:'janya', number:null, name:'Ahiri', melakarta:'Chakravakam (16)',
+    aroh:['Sa','R1','G3','M1','Pa','D2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R1','Sa'],
+    vadi:'G3', samvadi:'N2', time:'Morning', mood:'Pleading, Melancholic',
+    phrases:['Sa R1 G3 M1 Pa Da Sa','Ni Da Pa M1 G3 Ri Sa','G3 M1 Pa Da Sa'],
+    tags:['Audava-Sampurna','Morning','Melancholic'],
+    description:'A raga of tender, pleading beauty derived from Chakravakam. Omits Ni in ascent. Known for compositions of heartfelt longing and devotion, particularly associated with Thyagaraja.' },
+
+  { type:'janya', number:null, name:'Suddha Saveri', melakarta:'Dheerashankarabharanam (29)',
+    aroh:['Sa','R2','M1','Pa','D2','Sa'], avaroh:['Sa','D2','Pa','M1','R2','Sa'],
+    vadi:'R2', samvadi:'Pa', time:'Morning', mood:'Pure, Pleasing',
+    phrases:['Sa Ri Ma Pa Da Sa','Sa Da Pa Ma Ri Sa','Pa Da Sa'],
+    tags:['Audava','Morning','Pleasing'], description:'A pure, simple pentatonic raga. Clear and pleasing, equivalent to the major pentatonic. Widely taught to beginners.' },
+];
+
+// ═══════════════════════════════════════════
+// RAGA VIDYA — consolidated app logic
+// ═══════════════════════════════════════════
+
+// ─── DATA INJECTED BELOW ───
+// (NOTE_NAMES, SWARA_SEMITONES, RAGAS inserted by build script)
+
+// ─── STATE ───
+let selectedRaga = null;
+let currentOctave = 4;
+let audioCtx = null;
+let isLooping = false;
+let activeSeq = null;
+let activeTypeFilter = 'all';
+let tempo = 100;
+let playbackTimeout = null;
+
+let activeGuitarSeq = null;
+let guitarTempo = 100;
+let guitarLooping = false;
+let guitarPlaybackTimeout = null;
+
+let identifyMode = 'text';
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordingTimer = null;
+let recordingSeconds = 0;
+let recordedBlob = null;
+
+// ─── AUDIO ───
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function midiToFreq(midi) {
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
+
+function playNote(midi, el) {
+  const ctx = getAudioCtx();
+  const type = document.getElementById('kb-sound-select').value;
+  const freq = midiToFreq(midi);
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  if (type === 'triangle') {
+    osc.type = 'triangle';
+    const osc2 = ctx.createOscillator();
+    const g2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.value = freq * 2;
+    g2.gain.value = 0.1;
+    osc2.connect(g2);
+    g2.connect(ctx.destination);
+    osc2.start();
+    osc2.stop(ctx.currentTime + 1.2);
+  } else {
+    osc.type = type;
+  }
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.4, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+  osc.start();
+  osc.stop(ctx.currentTime + 1.5);
+  if (el) {
+    el.classList.add('pressed');
+    setTimeout(() => el.classList.remove('pressed'), 300);
+  }
+}
+
+// ─── NAV ───
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const tab = document.getElementById('tab-' + name);
+  tab.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'keyboard' || name === 'guitar') {
+    if (window.innerHeight > window.innerWidth) {
+      tab.classList.add('needs-landscape');
+    } else {
+      tab.classList.remove('needs-landscape');
+    }
+  }
+  if (name === 'guitar') updateGuitar();
+}
+
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    ['keyboard', 'guitar'].forEach(name => {
+      const tab = document.getElementById('tab-' + name);
+      if (tab && tab.classList.contains('active')) {
+        tab.classList.toggle('needs-landscape', window.innerHeight > window.innerWidth);
+      }
+    });
+  }, 300);
+});
+
+// ─── EXPLORER ───
+function getSwaraClass(sw) {
+  if (!sw) return '';
+  if (sw === 'Sa') return 'swara-Sa';
+  if (sw.startsWith('R')) return 'swara-R1';
+  if (sw.startsWith('G')) return 'swara-G1';
+  if (sw.startsWith('M')) return 'swara-M1';
+  if (sw === 'Pa' || sw === 'P') return 'swara-Pa';
+  if (sw.startsWith('D')) return 'swara-D1';
+  if (sw.startsWith('N')) return 'swara-N1';
+  return '';
+}
+
+function swaraPills(swaras) {
+  return swaras.map(s => '<span class="swara-pill ' + getSwaraClass(s) + '">' + s + '</span>').join('');
+}
+
+function ragaItem(r) {
+  const idx = RAGAS.indexOf(r);
+  const num = r.number ? '#' + r.number + ' · ' : '';
+  const sel = selectedRaga && selectedRaga.name === r.name ? 'selected' : '';
+  return '<div class="raga-item ' + sel + '" onclick="selectRaga(' + idx + ')">' +
+    '<div><div class="raga-item-name">' + r.name + '</div>' +
+    '<div class="raga-item-meta">' + num + r.time + '</div></div>' +
+    '<div class="raga-item-chevron">›</div></div>';
+}
+
+function renderRagaList(ragas) {
+  const el = document.getElementById('raga-list-items');
+  if (!ragas.length) {
+    el.innerHTML = '<div style="padding:20px;font-size:0.72rem;color:var(--text-muted);text-align:center">No ragas match</div>';
+    return;
+  }
+  const melakartas = ragas.filter(r => r.type === 'melakarta');
+  const janyas = ragas.filter(r => r.type === 'janya');
+  let html = '';
+  if (melakartas.length && activeTypeFilter !== 'janya') {
+    html += '<div class="melakarta-label">Melakarta (' + melakartas.length + ')</div>';
+    html += melakartas.map(r => ragaItem(r)).join('');
+  }
+  if (janyas.length && activeTypeFilter !== 'melakarta') {
+    html += '<div class="melakarta-label" style="margin-top:8px">Janya (' + janyas.length + ')</div>';
+    html += janyas.map(r => ragaItem(r)).join('');
+  }
+  el.innerHTML = html;
+}
+
+function filterRagas(query) {
+  let filtered = RAGAS.filter(r =>
+    r.name.toLowerCase().includes(query.toLowerCase()) ||
+    r.tags.some(t => t.toLowerCase().includes(query.toLowerCase())) ||
+    r.mood.toLowerCase().includes(query.toLowerCase()) ||
+    r.melakarta.toLowerCase().includes(query.toLowerCase())
+  );
+  if (activeTypeFilter !== 'all') filtered = filtered.filter(r => r.type === activeTypeFilter);
+  renderRagaList(filtered);
+}
+
+function setTypeFilter(type) {
+  activeTypeFilter = type;
+  document.querySelectorAll('.type-filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.type-filter-btn[data-type="' + type + '"]').classList.add('active');
+  filterRagas(document.getElementById('raga-search').value);
+}
+
+function selectRaga(index) {
+  selectedRaga = RAGAS[index];
+  filterRagas(document.getElementById('raga-search').value);
+  renderRagaDetail(selectedRaga);
+}
+
+function renderRagaDetail(raga) {
+  const inner = document.getElementById('raga-detail-content');
+  const num = raga.number ? ' <span style="font-size:0.7rem;color:var(--text-muted)">#' + raga.number + '</span>' : '';
+  const typeColor = raga.type === 'melakarta'
+    ? 'color:var(--gold);border-color:rgba(201,168,76,0.4)'
+    : 'color:var(--teal);border-color:rgba(76,168,160,0.4)';
+  const typeLabel = raga.type === 'melakarta' ? 'Melakarta' : 'Janya';
+
+  inner.innerHTML =
+    '<div class="raga-title">' + raga.name + num + '</div>' +
+    '<div class="raga-subtitle">' + raga.melakarta + '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<span class="tag" style="' + typeColor + '">' + typeLabel + '</span>' +
+      raga.tags.map(t => '<span class="tag">' + t + '</span>').join('') +
+    '</div>' +
+    '<p class="raga-description">' + raga.description + '</p>' +
+    '<div class="detail-card"><div class="detail-card-label">Arohana</div>' +
+      '<div class="swara-row">' + swaraPills(raga.aroh) + '</div></div>' +
+    '<div class="detail-card"><div class="detail-card-label">Avarohana</div>' +
+      '<div class="swara-row">' + swaraPills(raga.avaroh) + '</div></div>' +
+    '<div class="detail-card"><div class="detail-card-label">Vadi &amp; Samvadi</div>' +
+      '<div class="vadi-section">' +
+        '<div class="vadi-block"><label>Vadi (King)</label>' +
+          '<span class="swara-pill ' + getSwaraClass(raga.vadi) + '">' + raga.vadi + '</span></div>' +
+        '<div class="vadi-block"><label>Samvadi (Minister)</label>' +
+          '<span class="swara-pill ' + getSwaraClass(raga.samvadi) + '">' + raga.samvadi + '</span></div>' +
+      '</div></div>' +
+    '<div class="detail-card"><div class="detail-card-label">Time &amp; Mood</div>' +
+      '<span class="time-badge">' + raga.time + '</span>' +
+      '<div style="font-size:0.75rem;color:var(--text-dim);margin-top:8px">' + raga.mood + '</div></div>' +
+    '<div class="detail-card"><div class="detail-card-label">Characteristic Phrases</div>' +
+      raga.phrases.map(p => '<div class="phrase-item">' + p + '</div>').join('') + '</div>' +
+    '<button class="open-in-btn" onclick="quickLoadInKeyboard(\'' + raga.name.replace(/'/g, "\\'") + '\')">&#9000;&nbsp; Open in Keyboard</button>' +
+    '<button class="open-in-btn" onclick="quickLoadInGuitar(\'' + raga.name.replace(/'/g, "\\'") + '\')">&#127928;&nbsp; Open in Guitar</button>';
+
+  showRagaDetail();
+}
+
+function showRagaDetail() {
+  document.getElementById('raga-list').classList.add('hidden');
+  document.getElementById('raga-detail').classList.add('visible');
+}
+
+function showRagaList() {
+  document.getElementById('raga-list').classList.remove('hidden');
+  document.getElementById('raga-detail').classList.remove('visible');
+}
+
+// ─── KEYBOARD ───
+const WHITE_SEMITONES = [0, 2, 4, 5, 7, 9, 11];
+
+function updateKeyboard(keepSeq) {
+  if (!keepSeq) {
+    activeSeq = null;
+    ['btn-aroh', 'btn-avaroh'].forEach(id => {
+      const b = document.getElementById(id);
+      if (b) b.classList.remove('active');
+    });
+    const hint = document.getElementById('kb-sequence-hint');
+    if (hint) hint.textContent = 'Select Arohana or Avarohana to highlight keys, then press Play.';
+  }
+
+  const ragaIdx = document.getElementById('kb-raga-select').value;
+  const raga = ragaIdx !== '' ? RAGAS[parseInt(ragaIdx)] : null;
+  const tonic = parseInt(document.getElementById('kb-tonic-select').value);
+
+  // Update raga name display
+  const display = document.getElementById('kb-raga-name-display');
+  if (display) display.textContent = raga ? raga.name : 'No raga selected';
+
+  // Show/hide playback
+  const playback = document.getElementById('kb-playback');
+  if (playback) playback.style.display = raga ? 'block' : 'none';
+
+  // Which semitones to highlight
+  let highlightSemitones = new Set();
+  let vadiSemitone = -1, samvadiSemitone = -1;
+  const swaraNames = {};
+
+  if (raga) {
+    const seqSwaras = activeSeq === 'aroh' ? raga.aroh : activeSeq === 'avaroh' ? raga.avaroh : [];
+    seqSwaras.forEach(sw => { if (sw in SWARA_SEMITONES) highlightSemitones.add(SWARA_SEMITONES[sw]); });
+    [...new Set([...raga.aroh, ...raga.avaroh])].forEach(sw => {
+      if (sw in SWARA_SEMITONES) swaraNames[(tonic + SWARA_SEMITONES[sw]) % 12] = sw;
+    });
+    if (raga.vadi in SWARA_SEMITONES) vadiSemitone = SWARA_SEMITONES[raga.vadi];
+    if (raga.samvadi in SWARA_SEMITONES) samvadiSemitone = SWARA_SEMITONES[raga.samvadi];
+  }
+
+  const kb = document.getElementById('keyboard');
+  kb.innerHTML = '';
+  const startNote = 48 + tonic;
+  const blackAfter = { 0: 1, 2: 3, 5: 6, 7: 8, 9: 10 };
+
+  for (let oct = 0; oct < 2; oct++) {
+    for (let w = 0; w < 7; w++) {
+      const semi = WHITE_SEMITONES[w];
+      const absMidi = startNote + oct * 12 + semi;
+      const absSemi = (tonic + semi) % 12;
+      const inSeq = highlightSemitones.has(semi);
+      const isVadi = semi === vadiSemitone;
+      const isSamvadi = semi === samvadiSemitone;
+      const swName = swaraNames[absSemi] || '';
+      const noteName = NOTE_NAMES[absSemi];
+
+      let wClass = 'white-key';
+      if (isVadi) wClass += ' in-raga vadi';
+      else if (isSamvadi) wClass += ' in-raga samvadi';
+      else if (inSeq) wClass += ' in-raga';
+
+      const wKey = document.createElement('div');
+      wKey.className = wClass;
+      wKey.dataset.midi = absMidi;
+      wKey.innerHTML = '<div class="key-label"><span class="swara-name">' + swName + '</span><span class="note-name">' + noteName + '</span></div>';
+      wKey.addEventListener('mousedown', () => playNote(absMidi, wKey));
+      wKey.addEventListener('touchstart', e => { e.preventDefault(); playNote(absMidi, wKey); }, { passive: false });
+      kb.appendChild(wKey);
+
+      if (semi in blackAfter) {
+        const bSemi = blackAfter[semi];
+        const bAbsMidi = startNote + oct * 12 + bSemi;
+        const bAbsSemi = (tonic + bSemi) % 12;
+        const bInSeq = highlightSemitones.has(bSemi);
+        const bIsVadi = bSemi === vadiSemitone;
+        const bIsSamvadi = bSemi === samvadiSemitone;
+        const bSwName = swaraNames[bAbsSemi] || '';
+        const bNoteName = NOTE_NAMES[bAbsSemi];
+
+        let bClass = 'black-key';
+        if (bIsVadi) bClass += ' in-raga vadi';
+        else if (bIsSamvadi) bClass += ' in-raga samvadi';
+        else if (bInSeq) bClass += ' in-raga';
+
+        const bWrapper = document.createElement('div');
+        bWrapper.className = 'black-key-wrapper';
+        const bKey = document.createElement('div');
+        bKey.className = bClass;
+        bKey.dataset.midi = bAbsMidi;
+        bKey.innerHTML = '<div class="key-label"><span class="swara-name">' + bSwName + '</span><span class="note-name">' + bNoteName + '</span></div>';
+        bKey.addEventListener('mousedown', () => playNote(bAbsMidi, bKey));
+        bKey.addEventListener('touchstart', e => { e.preventDefault(); playNote(bAbsMidi, bKey); }, { passive: false });
+        bWrapper.appendChild(bKey);
+        kb.appendChild(bWrapper);
+      }
+    }
+  }
+}
+
+function changeOctave(delta) {
+  currentOctave = Math.max(2, Math.min(6, currentOctave + delta));
+  document.getElementById('octave-label').textContent = currentOctave;
+}
+
+function noteInterval() { return Math.round(60000 / tempo); }
+
+function updateTempo(val) {
+  tempo = parseInt(val);
+  document.getElementById('tempo-label').textContent = tempo + ' BPM';
+  guitarTempo = tempo;
+  const gs = document.getElementById('guitar-tempo-slider');
+  if (gs) { gs.value = tempo; document.getElementById('guitar-tempo-label').textContent = tempo + ' BPM'; }
+}
+
+function selectSequence(type) {
+  stopAll();
+  activeSeq = (activeSeq === type) ? null : type;
+  document.getElementById('btn-aroh').classList.toggle('active', activeSeq === 'aroh');
+  document.getElementById('btn-avaroh').classList.toggle('active', activeSeq === 'avaroh');
+  const hint = document.getElementById('kb-sequence-hint');
+  if (hint) hint.textContent = activeSeq
+    ? (activeSeq === 'aroh' ? 'Arohana' : 'Avarohana') + ' highlighted. Press Play to hear it.'
+    : 'Select Arohana or Avarohana to highlight keys, then press Play.';
+  updateKeyboard(true);
+}
+
+async function playSelected() {
+  if (!activeSeq) return;
+  stopAll();
+  await playSequence(activeSeq, false);
+}
+
+async function playSequence(type, isLoopCall) {
+  const ragaIdx = document.getElementById('kb-raga-select').value;
+  if (ragaIdx === '') return true;
+  const raga = RAGAS[parseInt(ragaIdx)];
+  const tonic = parseInt(document.getElementById('kb-tonic-select').value);
+  const swaras = type === 'aroh' ? raga.aroh : [...raga.avaroh];
+  const playBtn = document.getElementById('btn-play');
+  if (playBtn) playBtn.classList.add('playing');
+  const baseMidi = 48 + tonic;
+
+  for (let i = 0; i < swaras.length; i++) {
+    const sw = swaras[i];
+    let midi;
+    if (sw === 'Sa' && type === 'aroh' && i === swaras.length - 1) midi = baseMidi + 12;
+    else if (sw === 'Sa' && type === 'avaroh' && i === 0) midi = baseMidi + 12;
+    else { const semi = SWARA_SEMITONES[sw] || 0; midi = baseMidi + semi; }
+
+    const keyEl = document.querySelector('[data-midi="' + midi + '"]');
+    if (keyEl) {
+      keyEl.classList.add('pressed');
+      setTimeout(() => keyEl.classList.remove('pressed'), noteInterval() * 0.8);
+    }
+    playNote(midi);
+    await new Promise(r => { playbackTimeout = setTimeout(r, noteInterval()); });
+    if (isLoopCall && !isLooping) {
+      if (playBtn) playBtn.classList.remove('playing');
+      return false;
+    }
+  }
+  if (playBtn) playBtn.classList.remove('playing');
+  return true;
+}
+
+function toggleLoop() {
+  if (isLooping) {
+    isLooping = false;
+    document.getElementById('btn-loop').classList.remove('active');
+    stopAll();
+  } else {
+    if (!activeSeq) return;
+    isLooping = true;
+    document.getElementById('btn-loop').classList.add('active');
+    runLoop();
+  }
+}
+
+async function runLoop() {
+  while (isLooping) {
+    const ok = await playSequence(activeSeq, true);
+    if (!ok || !isLooping) break;
+    await new Promise(r => { playbackTimeout = setTimeout(r, noteInterval()); });
+  }
+  document.getElementById('btn-loop').classList.remove('active');
+  isLooping = false;
+}
+
+function stopAll() {
+  isLooping = false;
+  clearTimeout(playbackTimeout);
+  const lb = document.getElementById('btn-loop');
+  if (lb) lb.classList.remove('active');
+  const pb = document.getElementById('btn-play');
+  if (pb) pb.classList.remove('playing');
+}
+
+// ─── GUITAR ───
+const GUITAR_STRINGS_STANDARD = [
+  { name: 'e', midi: 64 }, { name: 'B', midi: 59 },
+  { name: 'G', midi: 55 }, { name: 'D', midi: 50 },
+  { name: 'A', midi: 45 }, { name: 'E', midi: 40 }
+];
+const FRET_DOT_FRETS = new Set([3, 5, 7, 9, 12]);
+
+function guitarNoteInterval() { return Math.round(60000 / guitarTempo); }
+
+function updateGuitarTempo(val) {
+  guitarTempo = parseInt(val);
+  document.getElementById('guitar-tempo-label').textContent = guitarTempo + ' BPM';
+  tempo = guitarTempo;
+  const ks = document.getElementById('tempo-slider');
+  if (ks) { ks.value = guitarTempo; document.getElementById('tempo-label').textContent = guitarTempo + ' BPM'; }
+}
+
+function selectGuitarSeq(type) {
+  stopGuitarAll();
+  activeGuitarSeq = (activeGuitarSeq === type) ? null : type;
+  document.getElementById('gbtn-aroh').classList.toggle('active', activeGuitarSeq === 'aroh');
+  document.getElementById('gbtn-avaroh').classList.toggle('active', activeGuitarSeq === 'avaroh');
+  const hint = document.getElementById('guitar-seq-hint');
+  if (hint) hint.textContent = activeGuitarSeq
+    ? (activeGuitarSeq === 'aroh' ? 'Arohana' : 'Avarohana') + ' highlighted. Press Play to hear it.'
+    : 'Select Arohana or Avarohana to highlight notes, then press Play.';
+  updateGuitar(true);
+}
+
+function playGuitarSelected() {
+  if (!activeGuitarSeq) return;
+  stopGuitarAll();
+  runGuitarSequence(activeGuitarSeq, false);
+}
+
+async function runGuitarSequence(type, isLoopCall) {
+  const ragaIdx = document.getElementById('guitar-raga-select').value;
+  if (ragaIdx === '') return true;
+  const raga = RAGAS[parseInt(ragaIdx)];
+  const swaras = type === 'aroh' ? raga.aroh : [...raga.avaroh];
+  const playBtn = document.getElementById('gbtn-play');
+  if (playBtn) playBtn.classList.add('playing');
+  const baseMidi = 48;
+
+  for (let i = 0; i < swaras.length; i++) {
+    const sw = swaras[i];
+    let midi;
+    if (sw === 'Sa' && type === 'aroh' && i === swaras.length - 1) midi = baseMidi + 12;
+    else if (sw === 'Sa' && type === 'avaroh' && i === 0) midi = baseMidi + 12;
+    else { midi = baseMidi + (SWARA_SEMITONES[sw] || 0); }
+
+    const relSemi = midi % 12;
+    document.querySelectorAll('#fretboard-container .fret-note').forEach(el => {
+      if (parseInt(el.dataset.midi) % 12 === relSemi) {
+        el.classList.add('pressed');
+        setTimeout(() => el.classList.remove('pressed'), guitarNoteInterval() * 0.8);
+      }
+    });
+    playNote(midi);
+    await new Promise(r => { guitarPlaybackTimeout = setTimeout(r, guitarNoteInterval()); });
+    if (isLoopCall && !guitarLooping) {
+      if (playBtn) playBtn.classList.remove('playing');
+      return false;
+    }
+  }
+  if (playBtn) playBtn.classList.remove('playing');
+  return true;
+}
+
+function toggleGuitarLoop() {
+  if (guitarLooping) {
+    guitarLooping = false;
+    document.getElementById('gbtn-loop').classList.remove('active');
+    stopGuitarAll();
+  } else {
+    if (!activeGuitarSeq) return;
+    guitarLooping = true;
+    document.getElementById('gbtn-loop').classList.add('active');
+    runGuitarLoop();
+  }
+}
+
+async function runGuitarLoop() {
+  while (guitarLooping) {
+    const ok = await runGuitarSequence(activeGuitarSeq, true);
+    if (!ok || !guitarLooping) break;
+    await new Promise(r => { guitarPlaybackTimeout = setTimeout(r, guitarNoteInterval()); });
+  }
+  document.getElementById('gbtn-loop').classList.remove('active');
+  guitarLooping = false;
+}
+
+function stopGuitarAll() {
+  guitarLooping = false;
+  clearTimeout(guitarPlaybackTimeout);
+  const lb = document.getElementById('gbtn-loop');
+  if (lb) lb.classList.remove('active');
+  const pb = document.getElementById('gbtn-play');
+  if (pb) pb.classList.remove('playing');
+}
+
+function updateGuitar(keepSeq) {
+  if (!keepSeq) {
+    activeGuitarSeq = null;
+    ['gbtn-aroh', 'gbtn-avaroh'].forEach(id => {
+      const b = document.getElementById(id);
+      if (b) b.classList.remove('active');
+    });
+    const hint = document.getElementById('guitar-seq-hint');
+    if (hint) hint.textContent = 'Select Arohana or Avarohana to highlight notes, then press Play.';
+  }
+
+  const ragaIdx = document.getElementById('guitar-raga-select').value;
+  const raga = ragaIdx !== '' ? RAGAS[parseInt(ragaIdx)] : null;
+  const tonic = 0;
+  const NUM_FRETS = 13;
+
+  const playback = document.getElementById('guitar-playback');
+  if (playback) playback.style.display = raga ? 'block' : 'none';
+
+  let highlightSemitones = new Set();
+  let vadiSemitone = -1, samvadiSemitone = -1;
+  const swaraNames = {};
+
+  if (raga) {
+    const seqSwaras = activeGuitarSeq === 'aroh' ? raga.aroh : activeGuitarSeq === 'avaroh' ? raga.avaroh : [];
+    seqSwaras.forEach(sw => { if (sw in SWARA_SEMITONES) highlightSemitones.add(SWARA_SEMITONES[sw]); });
+    [...new Set([...raga.aroh, ...raga.avaroh])].forEach(sw => {
+      if (sw in SWARA_SEMITONES) swaraNames[SWARA_SEMITONES[sw]] = sw;
+    });
+    if (raga.vadi in SWARA_SEMITONES) vadiSemitone = SWARA_SEMITONES[raga.vadi];
+    if (raga.samvadi in SWARA_SEMITONES) samvadiSemitone = SWARA_SEMITONES[raga.samvadi];
+  }
+
+  const container = document.getElementById('fretboard-container');
+  let html = '<div class="fretboard"><div class="fret-numbers">';
+  for (let f = 0; f < NUM_FRETS; f++) html += '<div class="fret-num">' + f + '</div>';
+  html += '</div><div class="fret-dots-row">';
+  for (let f = 0; f < NUM_FRETS; f++) {
+    html += '<div class="fret-dot-cell">' + (FRET_DOT_FRETS.has(f) ? '<div class="fret-dot"></div>' : '') + '</div>';
+  }
+  html += '</div>';
+
+  for (const str of GUITAR_STRINGS_STANDARD) {
+    html += '<div class="fret-row"><div class="string-label">' + str.name + '</div>';
+    for (let f = 0; f < NUM_FRETS; f++) {
+      const midi = str.midi + f;
+      const absSemi = midi % 12;
+      const relSemi = (absSemi - tonic + 12) % 12;
+      const noteName = NOTE_NAMES[absSemi];
+      const inSeq = highlightSemitones.has(relSemi);
+      const isVadi = relSemi === vadiSemitone;
+      const isSamvadi = relSemi === samvadiSemitone;
+      const swName = swaraNames[relSemi] || '';
+      const shouldShow = inSeq || isVadi || isSamvadi;
+      let noteClass = '';
+      if (shouldShow) {
+        if (isVadi) noteClass = 'fret-note vadi';
+        else if (isSamvadi) noteClass = 'fret-note samvadi';
+        else noteClass = 'fret-note in-raga';
+      }
+      html += '<div class="fret-cell"><div class="string-line"></div>';
+      if (noteClass) {
+        html += '<div class="' + noteClass + '" data-midi="' + midi + '" onclick="playNote(' + midi + ')" title="' + (swName || noteName) + '">' + (swName || noteName) + '</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ─── QUICK LOAD (from Explorer) ───
+function quickLoadInKeyboard(name) {
+  const idx = RAGAS.findIndex(r => r.name === name);
+  if (idx < 0) return;
+  document.getElementById('kb-raga-select').value = idx;
+  updateKeyboard(false);
+  showTab('keyboard', document.querySelectorAll('nav button')[1]);
+}
+
+function quickLoadInGuitar(name) {
+  const idx = RAGAS.findIndex(r => r.name === name);
+  if (idx < 0) return;
+  document.getElementById('guitar-raga-select').value = idx;
+  updateGuitar(false);
+  showTab('guitar', document.querySelectorAll('nav button')[2]);
+}
+
+function tryInKeyboard(ragaName) {
+  quickLoadInKeyboard(ragaName);
+}
+
+// ─── IDENTIFY — TEXT ───
+async function identifyRaga() {
+  const input = document.getElementById('identify-input').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('identify-btn-text');
+  const spinner = document.getElementById('identify-spinner');
+  const result = document.getElementById('identify-result');
+  btn.disabled = true;
+  spinner.classList.add('show');
+  result.classList.remove('show');
+
+  const ragaContext = RAGAS.map(r =>
+    r.name + ': aroh=[' + r.aroh.join(',') + '] avaroh=[' + r.avaroh.join(',') + '] vadi=' + r.vadi + ' mood="' + r.mood + '"'
+  ).join('\n');
+
+  const systemPrompt = 'You are a knowledgeable Carnatic music guru.\n' +
+    'The user describes swaras, notation, or mood. Identify the most likely raga.\n\n' +
+    'Database:\n' + ragaContext + '\n\n' +
+    'Respond ONLY in JSON, no markdown:\n' +
+    '{"primary_raga":"Raga Name","confidence":"High|Medium|Low","alternatives":["Alt1","Alt2"],' +
+    '"explanation":"2-3 sentences","key_features":["f1","f2","f3"],"tip":"practical tip"}';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: 'Identify the raga: ' + input }]
+      })
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content.map(c => c.text || '').join('');
+    const clean = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    showIdentifyResult(JSON.parse(clean));
+    result.classList.add('show');
+  } catch (e) {
+    document.getElementById('result-name').textContent = 'Could not identify';
+    document.getElementById('result-body').innerHTML = '<p style="color:var(--text-dim)">Something went wrong. Try describing swaras more specifically.</p>';
+    result.classList.add('show');
+  }
+  btn.disabled = false;
+  spinner.classList.remove('show');
+}
+
+// ─── IDENTIFY — AUDIO ───
+function setIdentifyMode(mode) {
+  identifyMode = mode;
+  document.getElementById('identify-text-mode').style.display = mode === 'text' ? 'block' : 'none';
+  document.getElementById('identify-audio-mode').style.display = mode === 'audio' ? 'block' : 'none';
+  document.getElementById('mode-btn-text').classList.toggle('active', mode === 'text');
+  document.getElementById('mode-btn-audio').classList.toggle('active', mode === 'audio');
+  document.getElementById('identify-result').classList.remove('show');
+}
+
+async function startRecording(e) {
+  if (e) e.preventDefault();
+  recordedChunks = [];
+  recordedBlob = null;
+  document.getElementById('audio-preview').style.display = 'none';
+  document.getElementById('recorder-timer').style.display = 'block';
+  recordingSeconds = 0;
+  document.getElementById('recorder-timer').textContent = '0s';
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus'
+      : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm'
+      : MediaRecorder.isTypeSupported('audio/ogg') ? 'audio/ogg' : 'audio/mp4';
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      recordedBlob = new Blob(recordedChunks, { type: mimeType });
+      const url = URL.createObjectURL(recordedBlob);
+      document.getElementById('audio-playback').src = url;
+      document.getElementById('audio-preview').style.display = 'flex';
+      document.getElementById('recorder-status').textContent = 'Recording saved — play it back or identify';
+    };
+    mediaRecorder.start(100);
+    document.getElementById('record-btn').classList.add('recording');
+    document.getElementById('recorder-status').textContent = 'Recording… release when done';
+    recordingTimer = setInterval(() => {
+      recordingSeconds++;
+      document.getElementById('recorder-timer').textContent = recordingSeconds + 's';
+      if (recordingSeconds >= 30) stopRecording();
+    }, 1000);
+  } catch (err) {
+    let msg = 'Microphone access denied.';
+    if (err.name === 'NotFoundError') msg = 'No microphone found.';
+    else if (err.name === 'NotAllowedError') msg = 'Microphone permission denied. Allow access in settings.';
+    document.getElementById('recorder-status').textContent = msg;
+  }
+}
+
+function stopRecording(e) {
+  if (e) e.preventDefault();
+  if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+  mediaRecorder.stop();
+  clearInterval(recordingTimer);
+  document.getElementById('record-btn').classList.remove('recording');
+  document.getElementById('recorder-timer').style.display = 'none';
+}
+
+function clearRecording() {
+  recordedBlob = null;
+  recordedChunks = [];
+  document.getElementById('audio-preview').style.display = 'none';
+  document.getElementById('recorder-status').textContent = 'Press and hold to record';
+  document.getElementById('identify-result').classList.remove('show');
+}
+
+async function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function identifyFromAudio() {
+  if (!recordedBlob) return;
+  const btn = document.getElementById('identify-btn-audio');
+  const spinner = document.getElementById('identify-spinner');
+  const result = document.getElementById('identify-result');
+  btn.disabled = true;
+  spinner.classList.add('show');
+  result.classList.remove('show');
+
+  try {
+    const base64Audio = await blobToBase64(recordedBlob);
+    const mimeType = recordedBlob.type.split(';')[0];
+    const ragaContext = RAGAS.map(r =>
+      r.name + ': aroh=[' + r.aroh.join(',') + '] avaroh=[' + r.avaroh.join(',') + '] vadi=' + r.vadi + ' parent=' + r.melakarta
+    ).join('\n');
+
+    const systemPrompt = 'You are an expert Carnatic musician who identifies ragas from audio.\n' +
+      'Listen for swaras used, intervals, characteristic phrases, gamaka, and mood.\n\n' +
+      'Database:\n' + ragaContext + '\n\n' +
+      'Respond ONLY in JSON, no markdown:\n' +
+      '{"primary_raga":"Raga Name","confidence":"High|Medium|Low","alternatives":["Alt1","Alt2"],' +
+      '"explanation":"what you heard","key_features":["f1","f2","f3"],"tip":"singing tip"}';
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'text', text: 'Identify the Carnatic raga from this recording.' },
+            { type: 'document', source: { type: 'base64', media_type: mimeType, data: base64Audio } }
+          ]
+        }]
+      })
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content.map(c => c.text || '').join('');
+    const clean = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    showIdentifyResult(JSON.parse(clean));
+    result.classList.add('show');
+  } catch (err) {
+    document.getElementById('result-name').textContent = 'Could not analyse audio';
+    document.getElementById('result-body').innerHTML =
+      '<p style="color:var(--text-dim);margin-bottom:12px">' + (err.message || 'Audio format may not be supported.') + '</p>' +
+      '<button class="mode-btn active" onclick="setIdentifyMode(\'text\')" style="width:100%">Switch to Describe mode</button>';
+    result.classList.add('show');
+  }
+  btn.disabled = false;
+  spinner.classList.remove('show');
+}
+
+function showIdentifyResult(parsed) {
+  document.getElementById('result-name').textContent = parsed.primary_raga;
+  const alts = parsed.alternatives && parsed.alternatives.length
+    ? '<span style="font-size:0.72rem;color:var(--text-dim)">Also possible: ' + parsed.alternatives.join(', ') + '</span>' : '';
+  const features = parsed.key_features && parsed.key_features.length
+    ? '<div style="margin-bottom:14px"><div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Key Features</div>' +
+      parsed.key_features.map(f => '<div style="font-size:0.75rem;color:var(--text-dim);padding:4px 0;border-bottom:1px solid var(--border)">· ' + f + '</div>').join('') + '</div>' : '';
+  const tip = parsed.tip
+    ? '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px 14px;margin-top:12px">' +
+      '<div style="font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">Tip</div>' +
+      '<div style="font-size:0.78rem;color:var(--text);line-height:1.7">' + parsed.tip + '</div></div>' : '';
+  const ragaNameSafe = (parsed.primary_raga || '').replace(/'/g, "\\'");
+  document.getElementById('result-body').innerHTML =
+    '<div style="margin-bottom:12px"><span class="tag" style="background:rgba(201,168,76,0.15);border-color:var(--gold);color:var(--gold)">Confidence: ' + parsed.confidence + '</span>' + alts + '</div>' +
+    '<p style="margin-bottom:14px;line-height:1.8">' + parsed.explanation + '</p>' +
+    features + tip +
+    '<button class="play-btn" style="margin-top:16px;width:100%" onclick="tryInKeyboard(\'' + ragaNameSafe + '\')">&#9000; Load in Keyboard</button>';
+}
+
+// ─── INIT ───
+function init() {
+  activeTypeFilter = 'all';
+  renderRagaList(RAGAS);
+
+  ['kb-raga-select', 'guitar-raga-select'].forEach(id => {
+    const sel = document.getElementById(id);
+    RAGAS.forEach((r, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = r.name;
+      sel.appendChild(opt);
+    });
+  });
+
+  updateKeyboard();
+  updateGuitar();
+}
+
+init();
+
+</script>
+</body>
+</html>

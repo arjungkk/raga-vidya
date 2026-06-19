@@ -1,0 +1,7 @@
+com.ragavidya.app-pngs-0 D:\projects\RagaVidya\app\build\generated\res\pngs\debug
+com.ragavidya.app-resValues-1 D:\projects\RagaVidya\app\build\generated\res\resValues\debug
+com.ragavidya.app-packageDebugResources-2 D:\projects\RagaVidya\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.ragavidya.app-packageDebugResources-3 D:\projects\RagaVidya\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.ragavidya.app-merged_res-4 D:\projects\RagaVidya\app\build\intermediates\merged_res\debug
+com.ragavidya.app-debug-5 D:\projects\RagaVidya\app\src\debug\res
+com.ragavidya.app-main-6 D:\projects\RagaVidya\app\src\main\res

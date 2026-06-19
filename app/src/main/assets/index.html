@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Raga Vidya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets — order matters: base first, then feature overrides -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/explorer.css">
+  <link rel="stylesheet" href="css/keyboard.css">
+  <link rel="stylesheet" href="css/guitar.css">
+  <link rel="stylesheet" href="css/identify.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════ -->
+<header>
+  <div class="logo">Raga <span>Vidya</span></div>
+</header>
+
+<!-- ══════════════════════════════════════════
+     BOTTOM NAVIGATION
+     ══════════════════════════════════════════ -->
+<nav>
+  <button class="active" onclick="App.showTab('explorer', this)">
+    <span class="nav-icon">𝄞</span>
+    <span>Ragas</span>
+    <div class="nav-bar"></div>
+  </button>
+  <button onclick="App.showTab('keyboard', this)">
+    <span class="nav-icon">⌨</span>
+    <span>Keyboard</span>
+    <div class="nav-bar"></div>
+  </button>
+  <button onclick="App.showTab('guitar', this)">
+    <span class="nav-icon">🎸</span>
+    <span>Guitar</span>
+    <div class="nav-bar"></div>
+  </button>
+  <button onclick="App.showTab('identify', this)">
+    <span class="nav-icon">✦</span>
+    <span>Identify</span>
+    <div class="nav-bar"></div>
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     APP BODY (fixed between header and nav)
+     ══════════════════════════════════════════ -->
+<div class="app-body">
+
+  <!-- ── EXPLORER TAB ── -->
+  <div id="tab-explorer" class="tab active">
+
+    <!-- Sidebar: raga list (slides left on selection) -->
+    <div class="raga-list" id="raga-list">
+      <div class="raga-list-topbar">
+        <div class="raga-list-title">Select a Raga</div>
+        <input class="search-box" type="text" id="raga-search"
+          placeholder="Search name, mood, tag…"
+          oninput="Explorer.filter(this.value)">
+        <div class="type-filters">
+          <button class="type-filter-btn active" data-type="all"
+            onclick="Explorer.setTypeFilter('all')">All</button>
+          <button class="type-filter-btn" data-type="melakarta"
+            onclick="Explorer.setTypeFilter('melakarta')">72 Mela</button>
+          <button class="type-filter-btn" data-type="janya"
+            onclick="Explorer.setTypeFilter('janya')">Janya</button>
+        </div>
+      </div>
+      <div id="raga-list-items"></div>
+    </div>
+
+    <!-- Detail panel (slides in from right) -->
+    <div class="raga-detail" id="raga-detail">
+      <button class="detail-back-btn" onclick="Explorer.showList()">&#8592; Back to Ragas</button>
+      <div id="raga-detail-content"></div>
+    </div>
+
+  </div><!-- /tab-explorer -->
+
+
+  <!-- ── KEYBOARD TAB ── -->
+  <div id="tab-keyboard" class="tab">
+
+    <!-- Portrait hint overlay -->
+    <div class="landscape-hint">
+      <div class="landscape-hint-icon">&#128242;</div>
+      <p>Rotate to landscape for a better keyboard experience</p>
+      <button class="landscape-hint-skip"
+        onclick="this.closest('.tab').classList.remove('needs-landscape')">
+        Continue anyway
+      </button>
+    </div>
+
+    <!-- Raga selector + name -->
+    <div class="kb-header">
+      <div class="kb-raga-name" id="kb-raga-name-display">No raga selected</div>
+      <select id="kb-raga-select" onchange="Keyboard.render()">
+        <option value="">&#8212; None &#8212;</option>
+      </select>
+    </div>
+
+    <!-- Controls: tonic, octave, sound type -->
+    <div class="ctrl-row">
+      <span class="ctrl-label">Sa</span>
+      <select id="kb-tonic-select" onchange="Keyboard.render()">
+        <option value="0" selected>C</option>
+        <option value="2">D</option>
+        <option value="3">D#</option>
+        <option value="4">E</option>
+        <option value="5">F</option>
+        <option value="7">G</option>
+        <option value="9">A</option>
+        <option value="10">Bb</option>
+        <option value="11">B</option>
+      </select>
+
+      <span class="ctrl-label" style="margin-left:8px">Oct</span>
+      <button class="octave-btn" onclick="Keyboard.changeOctave(-1)">&#8722;</button>
+      <span class="octave-label" id="octave-label">4</span>
+      <button class="octave-btn" onclick="Keyboard.changeOctave(1)">+</button>
+
+      <select id="kb-sound-select" style="margin-left:auto">
+        <option value="sine">Sine</option>
+        <option value="triangle" selected>Veena</option>
+        <option value="sawtooth">Saw</option>
+      </select>
+    </div>
+
+    <!-- Piano keys -->
+    <div class="keyboard-wrapper">
+      <div class="keyboard" id="keyboard"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="kb-legend">
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:rgba(201,168,76,0.3);border-color:var(--gold)"></div>
+        In sequence
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:rgba(201,168,76,0.6);border-color:var(--gold2)"></div>
+        Vadi
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:rgba(76,168,160,0.5);border-color:var(--teal)"></div>
+        Samvadi
+      </div>
+    </div>
+
+    <!-- Playback controls -->
+    <div class="playback-section" id="kb-playback" style="display:none">
+      <div class="playback-row">
+        <span class="section-title">Playback</span>
+        <div class="tempo-row">
+          <span class="ctrl-label">Tempo</span>
+          <input type="range" id="tempo-slider" min="40" max="240" value="100"
+            oninput="Keyboard.updateTempo(this.value)"
+            style="width:80px;accent-color:var(--gold);cursor:pointer">
+          <span id="tempo-label" style="font-size:0.7rem;color:var(--gold);min-width:48px">100 BPM</span>
+        </div>
+      </div>
+      <div class="play-btns">
+        <button class="play-btn seq-select-btn" id="btn-aroh"
+          onclick="Keyboard.selectSequence('aroh')">Arohana</button>
+        <button class="play-btn seq-select-btn" id="btn-avaroh"
+          onclick="Keyboard.selectSequence('avaroh')">Avarohana</button>
+        <div style="width:1px;height:28px;background:var(--border);align-self:center"></div>
+        <button class="play-btn play-action-btn" id="btn-play"
+          onclick="Keyboard.playSelected()">&#9654; Play</button>
+        <button class="play-btn" id="btn-loop"
+          onclick="Keyboard.toggleLoop()">&#10227; Loop</button>
+        <button class="play-btn" onclick="Keyboard.stopAll()">&#9632;</button>
+      </div>
+      <div class="kb-hint" id="kb-sequence-hint">
+        Select Arohana or Avarohana to highlight keys, then press Play.
+      </div>
+    </div>
+
+  </div><!-- /tab-keyboard -->
+
+
+  <!-- ── GUITAR TAB ── -->
+  <div id="tab-guitar" class="tab">
+
+    <!-- Portrait hint overlay -->
+    <div class="landscape-hint">
+      <div class="landscape-hint-icon">&#128242;</div>
+      <p>Rotate to landscape for a better fretboard view</p>
+      <button class="landscape-hint-skip"
+        onclick="this.closest('.tab').classList.remove('needs-landscape')">
+        Continue anyway
+      </button>
+    </div>
+
+    <!-- Raga selector -->
+    <div class="guitar-controls">
+      <select id="guitar-raga-select" onchange="Guitar.render()">
+        <option value="">&#8212; No Raga &#8212;</option>
+      </select>
+    </div>
+
+    <!-- Fretboard -->
+    <div class="fretboard-scroll">
+      <div id="fretboard-container"></div>
+    </div>
+
+    <!-- Playback controls -->
+    <div class="playback-section" id="guitar-playback" style="display:none">
+      <div class="playback-row">
+        <span class="section-title">Playback</span>
+        <div class="tempo-row">
+          <span class="ctrl-label">Tempo</span>
+          <input type="range" id="guitar-tempo-slider" min="40" max="240" value="100"
+            oninput="Guitar.updateTempo(this.value)"
+            style="width:80px;accent-color:var(--gold);cursor:pointer">
+          <span id="guitar-tempo-label" style="font-size:0.7rem;color:var(--gold);min-width:48px">100 BPM</span>
+        </div>
+      </div>
+      <div class="play-btns">
+        <button class="play-btn seq-select-btn" id="gbtn-aroh"
+          onclick="Guitar.selectSequence('aroh')">Arohana</button>
+        <button class="play-btn seq-select-btn" id="gbtn-avaroh"
+          onclick="Guitar.selectSequence('avaroh')">Avarohana</button>
+        <div style="width:1px;height:28px;background:var(--border);align-self:center"></div>
+        <button class="play-btn play-action-btn" id="gbtn-play"
+          onclick="Guitar.playSelected()">&#9654; Play</button>
+        <button class="play-btn" id="gbtn-loop"
+          onclick="Guitar.toggleLoop()">&#10227; Loop</button>
+        <button class="play-btn" onclick="Guitar.stopAll()">&#9632;</button>
+      </div>
+      <div class="kb-hint" id="guitar-seq-hint">
+        Select Arohana or Avarohana to highlight notes, then press Play.
+      </div>
+    </div>
+
+  </div><!-- /tab-guitar -->
+
+
+  <!-- ── IDENTIFY TAB ── -->
+  <div id="tab-identify" class="tab">
+    <div class="identify-inner">
+
+      <div class="identify-hero">
+        <h2>Raga Identifier</h2>
+        <p>Hum or sing a melody, or describe the swaras — AI will identify the raga.</p>
+      </div>
+
+      <!-- Mode toggle -->
+      <div class="identify-mode-row">
+        <button class="mode-btn active" id="mode-btn-text"
+          onclick="Identify.setMode('text')">&#9000; Describe</button>
+        <button class="mode-btn" id="mode-btn-audio"
+          onclick="Identify.setMode('audio')">&#127908; Sing / Hum</button>
+      </div>
+
+      <!-- Text mode -->
+      <div id="identify-text-mode">
+        <textarea class="describe-area" id="identify-input"
+          placeholder="e.g. Sa Ri2 Ga3 Ma1 Pa — feels evening and majestic..."></textarea>
+        <button class="identify-btn" id="identify-btn-text"
+          onclick="Identify.identifyFromText()">&#10022; Identify from Description</button>
+      </div>
+
+      <!-- Audio mode -->
+      <div id="identify-audio-mode" style="display:none">
+        <div class="recorder-box" id="recorder-box">
+          <div class="recorder-status" id="recorder-status">Press and hold to record</div>
+          <button class="record-btn" id="record-btn"
+            onmousedown="Identify.startRecording()"
+            onmouseup="Identify.stopRecording()"
+            ontouchstart="Identify.startRecording(event)"
+            ontouchend="Identify.stopRecording(event)">
+            <span class="record-icon">&#9679;</span>
+          </button>
+          <div class="recorder-hint">Hold the button while you sing or hum the raga</div>
+          <div class="recorder-timer" id="recorder-timer" style="display:none">0s</div>
+        </div>
+        <div class="audio-preview" id="audio-preview" style="display:none">
+          <audio id="audio-playback" controls></audio>
+          <button class="identify-btn" id="identify-btn-audio"
+            onclick="Identify.identifyFromAudio()">&#10022; Identify from Recording</button>
+          <button class="identify-btn"
+            style="background:none;border-color:var(--border);color:var(--text-dim);margin-top:8px"
+            onclick="Identify.clearRecording()">&#8635; Record Again</button>
+        </div>
+      </div>
+
+      <div class="spinner" id="identify-spinner"></div>
+
+      <div class="result-card" id="identify-result">
+        <div class="result-raga-name" id="result-name"></div>
+        <div class="result-body"     id="result-body"></div>
+      </div>
+
+    </div>
+  </div><!-- /tab-identify -->
+
+</div><!-- /app-body -->
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT — load order matters:
+       1. data (constants + RAGAS array)
+       2. state (shared mutable state)
+       3. audio (AudioContext, playNote)
+       4. feature modules (explorer, keyboard, guitar, identify)
+       5. app (init + nav — must be last)
+     ══════════════════════════════════════════ -->
+<script src="js/data/ragas.js"></script>
+<script src="js/state.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/explorer.js"></script>
+<script src="js/keyboard.js"></script>
+<script src="js/guitar.js"></script>
+<script src="js/identify.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
