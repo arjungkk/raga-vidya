@@ -1,5 +1,5 @@
 /**
- * identify.js — Raga Identifier tab
+ * identify.js: Raga Identifier tab
  *
  * Two modes:
  *  - Text: describe swaras / mood → Claude identifies
@@ -116,7 +116,7 @@ const Identify = (() => {
         State.recordedBlob = new Blob(State.recordedChunks, { type: mimeType });
         document.getElementById('audio-playback').src = URL.createObjectURL(State.recordedBlob);
         document.getElementById('audio-preview').style.display = 'flex';
-        document.getElementById('recorder-status').textContent = 'Recording saved — play it back or identify';
+        document.getElementById('recorder-status').textContent = 'Recording saved: play it back or identify';
       };
       State.mediaRecorder.start(100);
 
@@ -246,7 +246,7 @@ const Identify = (() => {
       ${features}
       ${tip}
       <button class="play-btn" style="margin-top:16px;width:100%"
-        onclick="Keyboard.quickLoad('${nameSafe}')">&#9000; Load in Keyboard</button>`;
+        onclick="Keyboard.quickLoad('${nameSafe}')">Piano Load in Keyboard</button>`;
 
     document.getElementById('identify-result').classList.add('show');
   }

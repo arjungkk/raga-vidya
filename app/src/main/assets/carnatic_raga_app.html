@@ -201,7 +201,6 @@
   .landscape-hint-skip { background:none; border:1px solid var(--border); color:var(--text-dim); padding:10px 20px; border-radius:6px; font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; margin-top:8px; }
   @media (orientation:portrait) { .needs-landscape .landscape-hint { display:flex; } }
 
-
 </style>
 </head>
 <body>
@@ -241,7 +240,7 @@
       <div id="raga-list-items"></div>
     </div>
     <div class="raga-detail" id="raga-detail">
-      <button class="detail-back-btn" onclick="showRagaList()">&#8592; Back to Ragas</button>
+      <button class="detail-back-btn" onclick="showRagaList()">Back Back to Ragas</button>
       <div id="raga-detail-content"></div>
     </div>
   </div>
@@ -249,7 +248,7 @@
   <!-- KEYBOARD -->
   <div id="tab-keyboard" class="tab">
     <div class="landscape-hint">
-      <div class="landscape-hint-icon">&#128242;</div>
+      <div class="landscape-hint-icon">[ ]</div>
       <p>Rotate to landscape for a better keyboard experience</p>
       <button class="landscape-hint-skip" onclick="this.closest('.tab').classList.remove('needs-landscape')">Continue anyway</button>
     </div>
@@ -268,7 +267,7 @@
         <option value="9">A</option><option value="10">Bb</option><option value="11">B</option>
       </select>
       <span class="ctrl-label" style="margin-left:8px">Oct</span>
-      <button class="octave-btn" onclick="changeOctave(-1)">&#8722;</button>
+      <button class="octave-btn" onclick="changeOctave(-1)">-</button>
       <span class="octave-label" id="octave-label">4</span>
       <button class="octave-btn" onclick="changeOctave(1)">+</button>
       <select id="kb-sound-select" style="margin-left:auto">
@@ -298,9 +297,9 @@
         <button class="play-btn seq-select-btn" id="btn-aroh" onclick="selectSequence('aroh')">Arohana</button>
         <button class="play-btn seq-select-btn" id="btn-avaroh" onclick="selectSequence('avaroh')">Avarohana</button>
         <div style="width:1px;height:28px;background:var(--border);align-self:center"></div>
-        <button class="play-btn play-action-btn" id="btn-play" onclick="playSelected()">&#9654; Play</button>
-        <button class="play-btn" id="btn-loop" onclick="toggleLoop()">&#10227; Loop</button>
-        <button class="play-btn" onclick="stopAll()">&#9632;</button>
+        <button class="play-btn play-action-btn" id="btn-play" onclick="playSelected()">Play Play</button>
+        <button class="play-btn" id="btn-loop" onclick="toggleLoop()">Loop Loop</button>
+        <button class="play-btn" onclick="stopAll()">Stop</button>
       </div>
       <div class="kb-hint" id="kb-sequence-hint">Select Arohana or Avarohana to highlight keys, then press Play.</div>
     </div>
@@ -309,7 +308,7 @@
   <!-- GUITAR -->
   <div id="tab-guitar" class="tab">
     <div class="landscape-hint">
-      <div class="landscape-hint-icon">&#128242;</div>
+      <div class="landscape-hint-icon">[ ]</div>
       <p>Rotate to landscape for a better fretboard view</p>
       <button class="landscape-hint-skip" onclick="this.closest('.tab').classList.remove('needs-landscape')">Continue anyway</button>
     </div>
@@ -337,9 +336,9 @@
         <button class="play-btn seq-select-btn" id="gbtn-aroh" onclick="selectGuitarSeq('aroh')">Arohana</button>
         <button class="play-btn seq-select-btn" id="gbtn-avaroh" onclick="selectGuitarSeq('avaroh')">Avarohana</button>
         <div style="width:1px;height:28px;background:var(--border);align-self:center"></div>
-        <button class="play-btn play-action-btn" id="gbtn-play" onclick="playGuitarSelected()">&#9654; Play</button>
-        <button class="play-btn" id="gbtn-loop" onclick="toggleGuitarLoop()">&#10227; Loop</button>
-        <button class="play-btn" onclick="stopGuitarAll()">&#9632;</button>
+        <button class="play-btn play-action-btn" id="gbtn-play" onclick="playGuitarSelected()">Play Play</button>
+        <button class="play-btn" id="gbtn-loop" onclick="toggleGuitarLoop()">Loop Loop</button>
+        <button class="play-btn" onclick="stopGuitarAll()">Stop</button>
       </div>
       <div class="kb-hint" id="guitar-seq-hint">Select Arohana or Avarohana to highlight notes, then press Play.</div>
     </div>
@@ -350,19 +349,19 @@
     <div class="identify-inner">
       <div class="identify-hero">
         <h2>Raga Identifier</h2>
-        <p>Hum or sing a melody, or describe the swaras — AI will identify the raga.</p>
+        <p>Hum or sing a melody, or describe the swaras: AI will identify the raga.</p>
       </div>
 
       <!-- Mode toggle -->
       <div class="identify-mode-row">
-        <button class="mode-btn active" id="mode-btn-text" onclick="setIdentifyMode('text')">&#9000; Describe</button>
-        <button class="mode-btn" id="mode-btn-audio" onclick="setIdentifyMode('audio')">&#127908; Sing / Hum</button>
+        <button class="mode-btn active" id="mode-btn-text" onclick="setIdentifyMode('text')">Piano Describe</button>
+        <button class="mode-btn" id="mode-btn-audio" onclick="setIdentifyMode('audio')">Mic Sing / Hum</button>
       </div>
 
       <!-- Text mode -->
       <div id="identify-text-mode">
-        <textarea class="describe-area" id="identify-input" placeholder="e.g. Sa Ri2 Ga3 Ma1 Pa — feels evening and majestic..."></textarea>
-        <button class="identify-btn" id="identify-btn-text" onclick="identifyRaga()">&#10022; Identify from Description</button>
+        <textarea class="describe-area" id="identify-input" placeholder="e.g. Sa Ri2 Ga3 Ma1 Pa: feels evening and majestic..."></textarea>
+        <button class="identify-btn" id="identify-btn-text" onclick="identifyRaga()">Identify Identify from Description</button>
       </div>
 
       <!-- Audio mode -->
@@ -372,15 +371,15 @@
           <button class="record-btn" id="record-btn"
             onmousedown="startRecording()" onmouseup="stopRecording()"
             ontouchstart="startRecording(event)" ontouchend="stopRecording(event)">
-            <span class="record-icon" id="record-icon">&#9679;</span>
+            <span class="record-icon" id="record-icon">REC</span>
           </button>
           <div class="recorder-hint">Hold the button while you sing or hum the raga</div>
           <div class="recorder-timer" id="recorder-timer" style="display:none">0s</div>
         </div>
         <div class="audio-preview" id="audio-preview" style="display:none">
           <audio id="audio-playback" controls style="width:100%;margin-bottom:10px"></audio>
-          <button class="identify-btn" id="identify-btn-audio" onclick="identifyFromAudio()">&#10022; Identify from Recording</button>
-          <button class="identify-btn" style="background:none;border-color:var(--border);color:var(--text-dim);margin-top:8px" onclick="clearRecording()">&#8635; Record Again</button>
+          <button class="identify-btn" id="identify-btn-audio" onclick="identifyFromAudio()">Identify Identify from Recording</button>
+          <button class="identify-btn" style="background:none;border-color:var(--border);color:var(--text-dim);margin-top:8px" onclick="clearRecording()">Retry Record Again</button>
         </div>
       </div>
 
@@ -406,11 +405,11 @@ const SWARA_SEMITONES = {
 
 const RAGAS = [
 
-  // ══════════════════════════════════════════
+  
   // 72 MELAKARTA RAGAS
-  // ══════════════════════════════════════════
+  
 
-  // Chakra 1 — Indu
+  // Chakra 1: Indu
   { type:'melakarta', number:1, name:'Kanakangi', melakarta:'Kanakangi (1)',
     aroh:['Sa','R1','G1','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G1','R1','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Austere',
@@ -447,7 +446,7 @@ const RAGAS = [
     phrases:['Sa R1 G1 M1 Pa D3','N3 Sa','Sa N3 D3 Pa'],
     tags:['Sampurna','Melakarta'], description:'Sixth melakarta (D3=D2, N3). Parent of Varali, one of the most important ragas.' },
 
-  // Chakra 2 — Netra
+  // Chakra 2: Netra
   { type:'melakarta', number:7, name:'Senavati', melakarta:'Senavati (7)',
     aroh:['Sa','R1','G2','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G2','R1','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Melancholic',
@@ -484,7 +483,7 @@ const RAGAS = [
     phrases:['Sa R1 G2 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1'],
     tags:['Sampurna','Melakarta'], description:'Twelfth melakarta meaning "beautiful". Completes the second chakra.' },
 
-  // Chakra 3 — Agni
+  // Chakra 3: Agni
   { type:'melakarta', number:13, name:'Gayakapriya', melakarta:'Gayakapriya (13)',
     aroh:['Sa','R1','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R1','Sa'],
     vadi:'G3', samvadi:'N1', time:'Any', mood:'Unusual',
@@ -501,7 +500,7 @@ const RAGAS = [
     aroh:['Sa','R1','G3','M1','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M1','G3','R1','Sa'],
     vadi:'R1', samvadi:'Pa', time:'Dawn', mood:'Austere, Prayerful',
     phrases:['Sa Ri Ga Ma Pa','Da Ni Sa','Sa Ni Da Pa Ma Ga Ri Sa'],
-    tags:['Sampurna','Melakarta','Dawn'], description:'The gateway raga — students of Carnatic music begin here. Corresponds to the Bhairav that of Hindustani. Deeply sacred.' },
+    tags:['Sampurna','Melakarta','Dawn'], description:'The gateway raga: students of Carnatic music begin here. Corresponds to the Bhairav that of Hindustani. Deeply sacred.' },
 
   { type:'melakarta', number:16, name:'Chakravakam', melakarta:'Chakravakam (16)',
     aroh:['Sa','R1','G3','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G3','R1','Sa'],
@@ -521,7 +520,7 @@ const RAGAS = [
     phrases:['Sa R1 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa'],
     tags:['Sampurna','Melakarta'], description:'Eighteenth melakarta completing the third chakra. Has a stately, dignified character.' },
 
-  // Chakra 4 — Veda
+  // Chakra 4: Veda
   { type:'melakarta', number:19, name:'Jhankaradhwani', melakarta:'Jhankaradhwani (19)',
     aroh:['Sa','R2','G2','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G2','R2','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Resonant',
@@ -558,7 +557,7 @@ const RAGAS = [
     phrases:['Sa R2 G2 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1'],
     tags:['Sampurna','Melakarta'], description:'Twenty-fourth melakarta meaning "beloved of Varuna (rain god)". Completes the fourth chakra.' },
 
-  // Chakra 5 — Bana
+  // Chakra 5: Bana
   { type:'melakarta', number:25, name:'Mararanjani', melakarta:'Mararanjani (25)',
     aroh:['Sa','R2','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R2','Sa'],
     vadi:'G3', samvadi:'D1', time:'Any', mood:'Pleasing',
@@ -595,7 +594,7 @@ const RAGAS = [
     phrases:['Sa R2 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1 G3'],
     tags:['Sampurna','Melakarta'], description:'Thirtieth melakarta completing the fifth chakra. Has a bright, full character.' },
 
-  // Chakra 6 — Rutu
+  // Chakra 6: Rutu
   { type:'melakarta', number:31, name:'Yagapriya', melakarta:'Yagapriya (31)',
     aroh:['Sa','R3','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R3','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Ritualistic',
@@ -632,7 +631,7 @@ const RAGAS = [
     phrases:['Sa R3 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa G3'],
     tags:['Sampurna','Melakarta'], description:'Thirty-sixth and last of the suddha madhyama melakartas. Marks the midpoint of the 72-raga system.' },
 
-  // Chakra 7 — Rishi (Prati Madhyama begins)
+  // Chakra 7: Rishi (Prati Madhyama begins)
   { type:'melakarta', number:37, name:'Salagam', melakarta:'Salagam (37)',
     aroh:['Sa','R1','G1','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G1','R1','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Intense',
@@ -669,7 +668,7 @@ const RAGAS = [
     phrases:['Sa R1 G1 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-second melakarta meaning "beloved of Raghu (Rama)". Has a regal, noble quality.' },
 
-  // Chakra 8 — Vasu
+  // Chakra 8: Vasu
   { type:'melakarta', number:43, name:'Gavambodhi', melakarta:'Gavambodhi (43)',
     aroh:['Sa','R1','G2','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G2','R1','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Earthy',
@@ -706,7 +705,7 @@ const RAGAS = [
     phrases:['Sa R1 G2 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-eighth melakarta meaning "divine gem". Completes the eighth chakra.' },
 
-  // Chakra 9 — Brahma
+  // Chakra 9: Brahma
   { type:'melakarta', number:49, name:'Dhavalambari', melakarta:'Dhavalambari (49)',
     aroh:['Sa','R1','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R1','Sa'],
     vadi:'M2', samvadi:'G3', time:'Any', mood:'White, Pure',
@@ -743,7 +742,7 @@ const RAGAS = [
     phrases:['Sa R1 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-fourth melakarta meaning "sustainer of the universe". Completes the ninth chakra.' },
 
-  // Chakra 10 — Disi
+  // Chakra 10: Disi
   { type:'melakarta', number:55, name:'Shamalangi', melakarta:'Shamalangi (55)',
     aroh:['Sa','R2','G2','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G2','R2','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Dark, Dense',
@@ -780,7 +779,7 @@ const RAGAS = [
     phrases:['Sa R2 G2 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixtieth melakarta meaning "principled". Completes the tenth chakra.' },
 
-  // Chakra 11 — Rudra
+  // Chakra 11: Rudra
   { type:'melakarta', number:61, name:'Kantamani', melakarta:'Kantamani (61)',
     aroh:['Sa','R2','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R2','Sa'],
     vadi:'M2', samvadi:'G3', time:'Any', mood:'Gem-like',
@@ -791,7 +790,7 @@ const RAGAS = [
     aroh:['Sa','R2','G3','M2','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M2','G3','R2','Sa'],
     vadi:'M2', samvadi:'G3', time:'Any', mood:'Bull-like',
     phrases:['Sa R2 G3 M2 Pa','D1 N2 Sa','N2 D1 Pa M2 G3'],
-    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-second melakarta meaning "beloved of Rishabha (the bull — Nandi)". Has a strong, steady quality.' },
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-second melakarta meaning "beloved of Rishabha (the bull: Nandi)". Has a strong, steady quality.' },
 
   { type:'melakarta', number:63, name:'Latangi', melakarta:'Latangi (63)',
     aroh:['Sa','R2','G3','M2','Pa','D1','N3','Sa'], avaroh:['Sa','N3','D1','Pa','M2','G3','R2','Sa'],
@@ -817,7 +816,7 @@ const RAGAS = [
     phrases:['Sa R2 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2 G3'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-sixth melakarta meaning "colourful sky". Completes the eleventh chakra.' },
 
-  // Chakra 12 — Aditya
+  // Chakra 12: Aditya
   { type:'melakarta', number:67, name:'Sucharitra', melakarta:'Sucharitra (67)',
     aroh:['Sa','R3','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R3','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Virtuous',
@@ -852,11 +851,11 @@ const RAGAS = [
     aroh:['Sa','R3','G3','M2','Pa','D3','N3','Sa'], avaroh:['Sa','N3','D3','Pa','M2','G3','R3','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Beloved of Connoisseurs',
     phrases:['Sa R3 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2 G3'],
-    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'The seventy-second and final melakarta, meaning "beloved of connoisseurs". Completes the entire system — an apt final raga for the discerning listener.' },
+    tags:['Sampurna','Melakarta','Prati Madhyama'], description:'The seventy-second and final melakarta, meaning "beloved of connoisseurs". Completes the entire system: an apt final raga for the discerning listener.' },
 
-  // ══════════════════════════════════════════
+  
   // MAJOR JANYA RAGAS
-  // ══════════════════════════════════════════
+  
 
   { type:'janya', number:null, name:'Bhairavi', melakarta:'Natabhairavi (20)',
     aroh:['Sa','R1','G2','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R1','Sa'],
@@ -1030,7 +1029,7 @@ const RAGAS = [
     aroh:['Sa','R2','G2','M1','Pa','D1','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R2','Sa'],
     vadi:'G2', samvadi:'D1', time:'Morning', mood:'Sweet, Melancholic',
     phrases:['Sa Ri Ga Ma Pa Da Sa','Ni Da Pa Ma Ga Ri Sa','Ga Ma Pa Da Sa'],
-    tags:['Audava-Sampurna','Morning'], description:'A raga of great beauty — sweet yet melancholic. Has a distinctive feminine quality and is beloved for its emotive compositions.' },
+    tags:['Audava-Sampurna','Morning'], description:'A raga of great beauty: sweet yet melancholic. Has a distinctive feminine quality and is beloved for its emotive compositions.' },
 
   { type:'janya', number:null, name:'Sindhu Bhairavi', melakarta:'Natabhairavi (20)',
     aroh:['Sa','R2','G2','M1','Pa','D2','N2','Sa'], avaroh:['Sa','N2','D2','Pa','M1','G2','R2','Sa'],
@@ -1066,7 +1065,7 @@ const RAGAS = [
     aroh:['Sa','R2','G3','M1','Pa','N2','Sa'], avaroh:['Sa','N2','Pa','M1','G3','R2','Sa'],
     vadi:'Pa', samvadi:'Sa', time:'Night', mood:'Lullaby, Soothing',
     phrases:['Sa Ri Ga Ma Pa Ni Sa','Ni Pa Ma Ga Ri Sa','Pa Ni Sa'],
-    tags:['Audava-Sampurna','Night','Lullaby'], description:'Famous as a lullaby raga — deeply soothing and sleep-inducing. Many great compositions for children and lullabies.' },
+    tags:['Audava-Sampurna','Night','Lullaby'], description:'Famous as a lullaby raga: deeply soothing and sleep-inducing. Many great compositions for children and lullabies.' },
 
   { type:'janya', number:null, name:'Vasanta', melakarta:'Mechakalyani (65)',
     aroh:['Sa','M2','G3','M2','Pa','N3','Sa'], avaroh:['Sa','N3','D2','Pa','M2','G3','R2','Sa'],
@@ -1106,14 +1105,10 @@ const RAGAS = [
     tags:['Audava','Morning','Pleasing'], description:'A pure, simple pentatonic raga. Clear and pleasing, equivalent to the major pentatonic. Widely taught to beginners.' },
 ];
 
-// ═══════════════════════════════════════════
-// RAGA VIDYA — consolidated app logic
-// ═══════════════════════════════════════════
+// RAGA VIDYA: consolidated app logic
 
-// ─── DATA INJECTED BELOW ───
 // (NOTE_NAMES, SWARA_SEMITONES, RAGAS inserted by build script)
 
-// ─── STATE ───
 let selectedRaga = null;
 let currentOctave = 4;
 let audioCtx = null;
@@ -1135,7 +1130,6 @@ let recordingTimer = null;
 let recordingSeconds = 0;
 let recordedBlob = null;
 
-// ─── AUDIO ───
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
@@ -1178,7 +1172,6 @@ function playNote(midi, el) {
   }
 }
 
-// ─── NAV ───
 function showTab(name, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -1206,7 +1199,6 @@ window.addEventListener('orientationchange', () => {
   }, 300);
 });
 
-// ─── EXPLORER ───
 function getSwaraClass(sw) {
   if (!sw) return '';
   if (sw === 'Sa') return 'swara-Sa';
@@ -1309,8 +1301,8 @@ function renderRagaDetail(raga) {
       '<div style="font-size:0.75rem;color:var(--text-dim);margin-top:8px">' + raga.mood + '</div></div>' +
     '<div class="detail-card"><div class="detail-card-label">Characteristic Phrases</div>' +
       raga.phrases.map(p => '<div class="phrase-item">' + p + '</div>').join('') + '</div>' +
-    '<button class="open-in-btn" onclick="quickLoadInKeyboard(\'' + raga.name.replace(/'/g, "\\'") + '\')">&#9000;&nbsp; Open in Keyboard</button>' +
-    '<button class="open-in-btn" onclick="quickLoadInGuitar(\'' + raga.name.replace(/'/g, "\\'") + '\')">&#127928;&nbsp; Open in Guitar</button>';
+    '<button class="open-in-btn" onclick="quickLoadInKeyboard(\'' + raga.name.replace(/'/g, "\\'") + '\')">Piano&nbsp; Open in Keyboard</button>' +
+    '<button class="open-in-btn" onclick="quickLoadInGuitar(\'' + raga.name.replace(/'/g, "\\'") + '\')">Guitar&nbsp; Open in Guitar</button>';
 
   showRagaDetail();
 }
@@ -1325,7 +1317,6 @@ function showRagaList() {
   document.getElementById('raga-detail').classList.remove('visible');
 }
 
-// ─── KEYBOARD ───
 const WHITE_SEMITONES = [0, 2, 4, 5, 7, 9, 11];
 
 function updateKeyboard(keepSeq) {
@@ -1523,7 +1514,6 @@ function stopAll() {
   if (pb) pb.classList.remove('playing');
 }
 
-// ─── GUITAR ───
 const GUITAR_STRINGS_STANDARD = [
   { name: 'e', midi: 64 }, { name: 'B', midi: 59 },
   { name: 'G', midi: 55 }, { name: 'D', midi: 50 },
@@ -1697,7 +1687,6 @@ function updateGuitar(keepSeq) {
   container.innerHTML = html;
 }
 
-// ─── QUICK LOAD (from Explorer) ───
 function quickLoadInKeyboard(name) {
   const idx = RAGAS.findIndex(r => r.name === name);
   if (idx < 0) return;
@@ -1718,7 +1707,6 @@ function tryInKeyboard(ragaName) {
   quickLoadInKeyboard(ragaName);
 }
 
-// ─── IDENTIFY — TEXT ───
 async function identifyRaga() {
   const input = document.getElementById('identify-input').value.trim();
   if (!input) return;
@@ -1766,7 +1754,6 @@ async function identifyRaga() {
   spinner.classList.remove('show');
 }
 
-// ─── IDENTIFY — AUDIO ───
 function setIdentifyMode(mode) {
   identifyMode = mode;
   document.getElementById('identify-text-mode').style.display = mode === 'text' ? 'block' : 'none';
@@ -1797,7 +1784,7 @@ async function startRecording(e) {
       const url = URL.createObjectURL(recordedBlob);
       document.getElementById('audio-playback').src = url;
       document.getElementById('audio-preview').style.display = 'flex';
-      document.getElementById('recorder-status').textContent = 'Recording saved — play it back or identify';
+      document.getElementById('recorder-status').textContent = 'Recording saved: play it back or identify';
     };
     mediaRecorder.start(100);
     document.getElementById('record-btn').classList.add('recording');
@@ -1913,10 +1900,9 @@ function showIdentifyResult(parsed) {
     '<div style="margin-bottom:12px"><span class="tag" style="background:rgba(201,168,76,0.15);border-color:var(--gold);color:var(--gold)">Confidence: ' + parsed.confidence + '</span>' + alts + '</div>' +
     '<p style="margin-bottom:14px;line-height:1.8">' + parsed.explanation + '</p>' +
     features + tip +
-    '<button class="play-btn" style="margin-top:16px;width:100%" onclick="tryInKeyboard(\'' + ragaNameSafe + '\')">&#9000; Load in Keyboard</button>';
+    '<button class="play-btn" style="margin-top:16px;width:100%" onclick="tryInKeyboard(\'' + ragaNameSafe + '\')">Piano Load in Keyboard</button>';
 }
 
-// ─── INIT ───
 function init() {
   activeTypeFilter = 'all';
   renderRagaList(RAGAS);

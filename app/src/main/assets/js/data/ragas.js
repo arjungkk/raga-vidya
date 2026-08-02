@@ -9,11 +9,11 @@ const SWARA_SEMITONES = {
 
 const RAGAS = [
 
-  // ══════════════════════════════════════════
+  
   // 72 MELAKARTA RAGAS
-  // ══════════════════════════════════════════
+  
 
-  // Chakra 1 — Indu
+  // Chakra 1 - Indu
   { type:'melakarta', number:1, name:'Kanakangi', melakarta:'Kanakangi (1)',
     aroh:['Sa','R1','G1','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G1','R1','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Austere',
@@ -50,7 +50,7 @@ const RAGAS = [
     phrases:['Sa R1 G1 M1 Pa D3','N3 Sa','Sa N3 D3 Pa'],
     tags:['Sampurna','Melakarta'], description:'Sixth melakarta (D3=D2, N3). Parent of Varali, one of the most important ragas.' },
 
-  // Chakra 2 — Netra
+  // Chakra 2 - Netra
   { type:'melakarta', number:7, name:'Senavati', melakarta:'Senavati (7)',
     aroh:['Sa','R1','G2','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G2','R1','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Melancholic',
@@ -87,7 +87,7 @@ const RAGAS = [
     phrases:['Sa R1 G2 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1'],
     tags:['Sampurna','Melakarta'], description:'Twelfth melakarta meaning "beautiful". Completes the second chakra.' },
 
-  // Chakra 3 — Agni
+  // Chakra 3 - Agni
   { type:'melakarta', number:13, name:'Gayakapriya', melakarta:'Gayakapriya (13)',
     aroh:['Sa','R1','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R1','Sa'],
     vadi:'G3', samvadi:'N1', time:'Any', mood:'Unusual',
@@ -124,7 +124,7 @@ const RAGAS = [
     phrases:['Sa R1 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa'],
     tags:['Sampurna','Melakarta'], description:'Eighteenth melakarta completing the third chakra. Has a stately, dignified character.' },
 
-  // Chakra 4 — Veda
+  // Chakra 4 - Veda
   { type:'melakarta', number:19, name:'Jhankaradhwani', melakarta:'Jhankaradhwani (19)',
     aroh:['Sa','R2','G2','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G2','R2','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Resonant',
@@ -161,7 +161,7 @@ const RAGAS = [
     phrases:['Sa R2 G2 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1'],
     tags:['Sampurna','Melakarta'], description:'Twenty-fourth melakarta meaning "beloved of Varuna (rain god)". Completes the fourth chakra.' },
 
-  // Chakra 5 — Bana
+  // Chakra 5 - Bana
   { type:'melakarta', number:25, name:'Mararanjani', melakarta:'Mararanjani (25)',
     aroh:['Sa','R2','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R2','Sa'],
     vadi:'G3', samvadi:'D1', time:'Any', mood:'Pleasing',
@@ -198,7 +198,7 @@ const RAGAS = [
     phrases:['Sa R2 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa M1 G3'],
     tags:['Sampurna','Melakarta'], description:'Thirtieth melakarta completing the fifth chakra. Has a bright, full character.' },
 
-  // Chakra 6 — Rutu
+  // Chakra 6 - Rutu
   { type:'melakarta', number:31, name:'Yagapriya', melakarta:'Yagapriya (31)',
     aroh:['Sa','R3','G3','M1','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M1','G3','R3','Sa'],
     vadi:'M1', samvadi:'Sa', time:'Any', mood:'Ritualistic',
@@ -235,7 +235,7 @@ const RAGAS = [
     phrases:['Sa R3 G3 M1 Pa D3','N3 Sa','Sa N3 D3 Pa G3'],
     tags:['Sampurna','Melakarta'], description:'Thirty-sixth and last of the suddha madhyama melakartas. Marks the midpoint of the 72-raga system.' },
 
-  // Chakra 7 — Rishi (Prati Madhyama begins)
+  // Chakra 7 - Rishi (Prati Madhyama begins)
   { type:'melakarta', number:37, name:'Salagam', melakarta:'Salagam (37)',
     aroh:['Sa','R1','G1','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G1','R1','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Intense',
@@ -272,7 +272,7 @@ const RAGAS = [
     phrases:['Sa R1 G1 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-second melakarta meaning "beloved of Raghu (Rama)". Has a regal, noble quality.' },
 
-  // Chakra 8 — Vasu
+  // Chakra 8 - Vasu
   { type:'melakarta', number:43, name:'Gavambodhi', melakarta:'Gavambodhi (43)',
     aroh:['Sa','R1','G2','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G2','R1','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Earthy',
@@ -309,7 +309,7 @@ const RAGAS = [
     phrases:['Sa R1 G2 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Forty-eighth melakarta meaning "divine gem". Completes the eighth chakra.' },
 
-  // Chakra 9 — Brahma
+  // Chakra 9 - Brahma
   { type:'melakarta', number:49, name:'Dhavalambari', melakarta:'Dhavalambari (49)',
     aroh:['Sa','R1','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R1','Sa'],
     vadi:'M2', samvadi:'G3', time:'Any', mood:'White, Pure',
@@ -346,7 +346,7 @@ const RAGAS = [
     phrases:['Sa R1 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Fifty-fourth melakarta meaning "sustainer of the universe". Completes the ninth chakra.' },
 
-  // Chakra 10 — Disi
+  // Chakra 10 - Disi
   { type:'melakarta', number:55, name:'Shamalangi', melakarta:'Shamalangi (55)',
     aroh:['Sa','R2','G2','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G2','R2','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Dark, Dense',
@@ -383,7 +383,7 @@ const RAGAS = [
     phrases:['Sa R2 G2 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixtieth melakarta meaning "principled". Completes the tenth chakra.' },
 
-  // Chakra 11 — Rudra
+  // Chakra 11 - Rudra
   { type:'melakarta', number:61, name:'Kantamani', melakarta:'Kantamani (61)',
     aroh:['Sa','R2','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R2','Sa'],
     vadi:'M2', samvadi:'G3', time:'Any', mood:'Gem-like',
@@ -420,7 +420,7 @@ const RAGAS = [
     phrases:['Sa R2 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2 G3'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'Sixty-sixth melakarta meaning "colourful sky". Completes the eleventh chakra.' },
 
-  // Chakra 12 — Aditya
+  // Chakra 12 - Aditya
   { type:'melakarta', number:67, name:'Sucharitra', melakarta:'Sucharitra (67)',
     aroh:['Sa','R3','G3','M2','Pa','D1','N1','Sa'], avaroh:['Sa','N1','D1','Pa','M2','G3','R3','Sa'],
     vadi:'M2', samvadi:'Sa', time:'Any', mood:'Virtuous',
@@ -457,9 +457,9 @@ const RAGAS = [
     phrases:['Sa R3 G3 M2 Pa D3','N3 Sa','Sa N3 D3 Pa M2 G3'],
     tags:['Sampurna','Melakarta','Prati Madhyama'], description:'The seventy-second and final melakarta, meaning "beloved of connoisseurs". Completes the entire system — an apt final raga for the discerning listener.' },
 
-  // ══════════════════════════════════════════
+  
   // MAJOR JANYA RAGAS
-  // ══════════════════════════════════════════
+  
 
   { type:'janya', number:null, name:'Bhairavi', melakarta:'Natabhairavi (20)',
     aroh:['Sa','R1','G2','M1','Pa','D1','N2','Sa'], avaroh:['Sa','N2','D1','Pa','M1','G2','R1','Sa'],

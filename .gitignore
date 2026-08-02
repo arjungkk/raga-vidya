@@ -1,0 +1,23 @@
+# Android build outputs
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+*.ap_
+
+# Local config (not committed)
+local.properties
+*.keystore
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# The old single-file version is kept for reference but not tracked
+app/src/main/assets/carnatic_raga_app.html

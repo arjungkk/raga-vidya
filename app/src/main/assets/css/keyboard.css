@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════
-   KEYBOARD — piano keys + controls
-   ═══════════════════════════════════════ */
+
 
 #tab-keyboard { overflow-y: auto; }
 #tab-keyboard::-webkit-scrollbar { display: none; }

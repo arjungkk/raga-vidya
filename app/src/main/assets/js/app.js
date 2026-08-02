@@ -1,11 +1,6 @@
 /**
- * app.js — application entry point
+ * app.js: application entry point
  *
- * Responsibilities:
- *  - Tab navigation (showTab)
- *  - Populate raga <select> dropdowns
- *  - Bootstrap all modules on DOMContentLoaded
- *  - Handle orientation changes for landscape hint
  */
 
 const App = (() => {

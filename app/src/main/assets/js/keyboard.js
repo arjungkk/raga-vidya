@@ -1,11 +1,6 @@
 /**
- * keyboard.js — Piano keyboard tab
+ * keyboard.js: Piano keyboard tab
  *
- * Responsibilities:
- *  - Render two-octave piano with correct key layout
- *  - Highlight swaras for the selected sequence (aroh / avaroh)
- *  - Arohana / Avarohana playback with note animation
- *  - Loop mode
  */
 
 const Keyboard = (() => {

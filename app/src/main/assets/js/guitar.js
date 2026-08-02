@@ -1,11 +1,6 @@
 /**
- * guitar.js — Guitar fretboard tab
+ * guitar.js: Guitar fretboard tab
  *
- * Responsibilities:
- *  - Render a 6-string × 13-fret fretboard (standard tuning)
- *  - Highlight swaras for the selected sequence
- *  - Arohana / Avarohana playback with fret-note animation
- *  - Loop mode
  */
 
 const Guitar = (() => {

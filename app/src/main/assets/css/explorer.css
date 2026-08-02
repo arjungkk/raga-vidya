@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════
-   EXPLORER — raga list + detail panel
-   ═══════════════════════════════════════ */
+
 
 #tab-explorer {
   position: relative;
@@ -258,4 +256,118 @@
   border-color: var(--gold);
   color: var(--gold);
   background: var(--gold-dim);
+}
+
+/* ── Swara sub-label (western degree shown inside pill) ── */
+.swara-sub {
+  display: block;
+  font-size: 0.48rem;
+  opacity: 0.75;
+  letter-spacing: 0.03em;
+  margin-top: 1px;
+  font-weight: 400;
+}
+
+.swara-legend {
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ── Info boxes (western analogy, scale structure) ── */
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.info-box--western {
+  background: rgba(76,116,201,0.08);
+  border-color: rgba(76,116,201,0.3);
+}
+
+.info-box--neutral {
+  background: var(--surface);
+}
+
+.info-box__icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+.info-box__label {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.info-box__text {
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ── Detail card hints ── */
+.detail-card-hint {
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+/* ── Vadi western description ── */
+.vadi-western {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ── Swara reference grid ── */
+.swara-reference-card { margin-top: 4px; }
+
+.swara-ref-grid {
+  display: grid;
+  grid-template-columns: 48px 1fr 52px 64px;
+  gap: 6px 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.swara-ref-header {
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.swara-ref-code {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  text-align: center;
+  border: 1px solid;
+}
+
+/* Reuse swara pill colours for the code column */
+.swara-ref-code.swara-Sa { background:rgba(201,76,76,0.15);  border-color:rgba(201,76,76,0.4);  color:#e88080; }
+.swara-ref-code.swara-R1 { background:rgba(201,116,76,0.15); border-color:rgba(201,116,76,0.4); color:#e8a070; }
+.swara-ref-code.swara-G1 { background:rgba(201,168,76,0.15); border-color:rgba(201,168,76,0.4); color:#e8c870; }
+.swara-ref-code.swara-M1 { background:rgba(138,201,76,0.15); border-color:rgba(138,201,76,0.4); color:#a8e070; }
+.swara-ref-code.swara-Pa { background:rgba(76,168,160,0.15); border-color:rgba(76,168,160,0.4); color:#70d0c8; }
+.swara-ref-code.swara-D1 { background:rgba(76,116,201,0.15); border-color:rgba(76,116,201,0.4); color:#70a0e8; }
+.swara-ref-code.swara-N1 { background:rgba(164,76,201,0.15); border-color:rgba(164,76,201,0.4); color:#c070e8; }
+
+.swara-ref-text {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  line-height: 1.3;
 }

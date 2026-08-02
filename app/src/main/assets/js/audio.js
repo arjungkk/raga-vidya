@@ -1,5 +1,5 @@
 /**
- * audio.js — low-level audio synthesis
+ * audio.js: low-level audio synthesis
  *
  * Manages a single shared AudioContext and provides playNote().
  * All other modules call playNote(); none create oscillators directly.

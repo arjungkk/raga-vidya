@@ -1,5 +1,5 @@
 /**
- * state.js — centralised mutable state for Raga Vidya
+ * state.js: centralised mutable state for Raga Vidya
  *
  * All modules import from this object rather than using scattered globals.
  * Mutation happens in the owning module; cross-module reads go through here.
@@ -22,7 +22,7 @@ const State = {
   guitarLooping:        false,
   guitarPlaybackTimeout: null,
 
-  // Identify — audio recording
+  // Identify: audio recording
   identifyMode:    'text',  // 'text' | 'audio'
   mediaRecorder:   null,
   recordedChunks:  [],
